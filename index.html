@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pravin Anbalagan — Portfolio</title>
+    <meta name="description" content="Pravin Anbalagan — Software Engineer. CS undergrad at VIT. Building at the intersection of AI/ML and Finance.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-dot" id="cursor-dot"></div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="main-nav">
+        <div class="nav-brand">
+            <a class="nav-logo" href="#">Pravin<span>.</span></a>
+            <span class="nav-portfolio-label">Portfolio</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#work" data-text="Work">Work</a></li>
+            <li><a href="#about" data-text="About">About</a></li>
+            <li><a href="#contact" data-text="Contact">Contact</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-nav" id="mobile-nav">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <div class="hero-meta">
+            <span class="mono">VIT Vellore — India</span>
+            <span class="mono">Pravin's Portfolio</span>
+        </div>
+
+        <div class="hero-main">
+            <h1 class="hero-headline js-reveal">
+                <span class="line">Engineer.</span>
+                <span class="line">Analyst.</span>
+                <span class="line italic">Builder.</span>
+            </h1>
+        </div>
+
+        <div class="hero-bottom">
+            <div class="hero-desc js-reveal">
+                <p>CS undergrad building at the intersection of</p>
+                <p><strong>Artificial Intelligence</strong> and <strong>Financial Systems.</strong></p>
+            </div>
+            <div class="hero-cta js-reveal">
+                <a href="#work" class="btn-outline" id="hero-view-work">View work <span class="arr">↓</span></a>
+                <a href="mailto:pravinanbalagan2@gmail.com" class="btn-solid" id="hero-contact">Get in touch</a>
+            </div>
+        </div>
+
+        <div class="hero-domains js-reveal">
+            <span class="domain-tag">[AI / ML]</span>
+            <span class="domain-tag">[Data Structures]</span>
+            <span class="domain-tag">[Finance]</span>
+            <span class="domain-tag">[Investment Banking]</span>
+            <span class="domain-tag">[Hedge Funds]</span>
+            <span class="domain-tag">[Full-Stack]</span>
+        </div>
+
+        <div class="hero-scroll-indicator">
+            <div class="scroll-track"><div class="scroll-thumb"></div></div>
+        </div>
+    </section>
+
+    <!-- WORK -->
+    <section class="work" id="work">
+        <div class="section-label">
+            <span class="mono">Selected work</span>
+            <span class="mono label-num">04 projects</span>
+        </div>
+
+        <!-- Project 01 -->
+        <article class="project-row js-reveal" id="proj-agrow" tabindex="0">
+            <div class="proj-left">
+                <span class="proj-num mono">01</span>
+                <div class="proj-image">
+                    <img src="agrow.png" alt="Agrow agricultural marketplace" loading="lazy">
+                </div>
+            </div>
+            <div class="proj-right">
+                <div class="proj-tags">
+                    <span>[Python]</span>
+                    <span>[SQL]</span>
+                    <span>[REST APIs]</span>
+                    <span>[Blockchain]</span>
+                </div>
+                <h2 class="proj-title">Agrow</h2>
+                <p class="proj-desc">Agricultural marketplace eliminating middlemen — built with full crop traceability and location-based order algorithms.</p>
+                <div class="proj-footer">
+                    <span class="mono proj-year">2025</span>
+                    <a class="proj-link" href="#" aria-label="View Agrow project">View →</a>
+                </div>
+            </div>
+        </article>
+
+        <div class="row-divider"></div>
+
+        <!-- Project 02 -->
+        <article class="project-row js-reveal" id="proj-football" tabindex="0">
+            <div class="proj-left">
+                <span class="proj-num mono">02</span>
+                <div class="proj-image">
+                    <img src="football.png" alt="FootballGPT transformer model" loading="lazy">
+                </div>
+            </div>
+            <div class="proj-right">
+                <div class="proj-tags">
+                    <span>[Python]</span>
+                    <span>[PyTorch]</span>
+                    <span>[Transformer]</span>
+                </div>
+                <h2 class="proj-title">FootballGPT</h2>
+                <p class="proj-desc">Full Transformer architecture trained from scratch for football commentary and Q&amp;A. Zero external APIs.</p>
+                <div class="proj-footer">
+                    <span class="mono proj-year">2025</span>
+                    <a class="proj-link" href="#" aria-label="View FootballGPT project">View →</a>
+                </div>
+            </div>
+        </article>
+
+        <div class="row-divider"></div>
+
+        <!-- Project 03 -->
+        <article class="project-row js-reveal" id="proj-face3d" tabindex="0">
+            <div class="proj-left">
+                <span class="proj-num mono">03</span>
+                <div class="proj-image">
+                    <img src="face_3d.png" alt="Deep3DFaceRecon 3D face reconstruction" loading="lazy">
+                </div>
+            </div>
+            <div class="proj-right">
+                <div class="proj-tags">
+                    <span>[Computer Vision]</span>
+                    <span>[OpenCV]</span>
+                    <span>[ResNet-50]</span>
+                </div>
+                <h2 class="proj-title">Deep3DFaceRecon</h2>
+                <p class="proj-desc">3D face reconstruction pipeline from single RGB images with real-time mesh visualization.</p>
+                <div class="proj-footer">
+                    <span class="mono proj-year">2024</span>
+                    <a class="proj-link" href="#" aria-label="View Deep3DFaceRecon project">View →</a>
+                </div>
+            </div>
+        </article>
+
+        <div class="row-divider"></div>
+
+        <!-- Project 04 -->
+        <article class="project-row js-reveal" id="proj-phyto" tabindex="0">
+            <div class="proj-left">
+                <span class="proj-num mono">04</span>
+                <div class="proj-image featured-img">
+                    <img src="phyto.png" alt="Phytochemicals NLP product analysis dashboard" loading="lazy">
+                    <div class="featured-label mono">Featured</div>
+                </div>
+            </div>
+            <div class="proj-right">
+                <div class="proj-tags">
+                    <span>[NLP]</span>
+                    <span>[ML]</span>
+                    <span>[Sentiment Analysis]</span>
+                    <span>[Python]</span>
+                </div>
+                <h2 class="proj-title">Phytochemicals<br>Product Analysis</h2>
+                <p class="proj-desc">Comprehensive NLP pipeline analysing phytochemical &amp; wellness product reviews — extracts sentiment, detects safety concerns, discovers market trends, and generates business intelligence reports.</p>
+                <div class="proj-footer">
+                    <span class="mono proj-year">2026</span>
+                    <a class="proj-link" href="#" aria-label="View Phytochemicals project">View →</a>
+                </div>
+            </div>
+        </article>
+
+        <div class="row-divider"></div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about" id="about">
+        <div class="section-label">
+            <span class="mono">About</span>
+        </div>
+
+        <div class="about-grid">
+            <!-- Left: big statement -->
+            <div class="about-statement js-reveal">
+                <h2>I work where<br><em>machines learn</em><br>and markets move.</h2>
+                <p>B.Tech Computer Science Engineering student at Vellore Institute of Technology. Equally obsessed with building AI systems and understanding how capital flows through financial markets.</p>
+            </div>
+
+            <!-- Right: structured info -->
+            <div class="about-details">
+                <div class="detail-block js-reveal">
+                    <h3 class="mono detail-label">[ Technical ]</h3>
+                    <ul>
+                        <li>Python, C/C++, Java</li>
+                        <li>TensorFlow, PyTorch, OpenCV</li>
+                        <li>SQL, REST APIs, Git</li>
+                        <li>NLTK, spaCy, Transformers</li>
+                        <li>Data Structures &amp; Algorithms</li>
+                    </ul>
+                </div>
+
+                <div class="detail-block js-reveal">
+                    <h3 class="mono detail-label">[ Finance &amp; Markets ]</h3>
+                    <ul>
+                        <li>Investment Banking</li>
+                        <li>Hedge Fund Strategies</li>
+                        <li>Quantitative Finance</li>
+                        <li>Financial Modelling</li>
+                        <li>Capital Markets</li>
+                    </ul>
+                </div>
+
+                <div class="detail-block js-reveal">
+                    <h3 class="mono detail-label">[ Education ]</h3>
+                    <ul>
+                        <li>B.Tech CSE — VIT Vellore</li>
+                        <li>Expected graduation: 2028</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="experience" id="experience">
+        <div class="section-label">
+            <span class="mono">Experience</span>
+        </div>
+
+        <div class="exp-list">
+            <div class="exp-item js-reveal" tabindex="0">
+                <span class="mono exp-year">2026</span>
+                <div class="exp-body">
+                    <h3>Social Summer of Code <span class="mono exp-role">[Open Source Contributor]</span></h3>
+                    <p>Developed and merged features, resolved issues, and collaborated with maintainers via GitHub PRs across active open-source projects.</p>
+                </div>
+            </div>
+            <div class="exp-divider"></div>
+            <div class="exp-item js-reveal" tabindex="0">
+                <span class="mono exp-year">2024</span>
+                <div class="exp-body">
+                    <h3>DevJams '24 — GDG VIT <span class="mono exp-role">[Finalist]</span></h3>
+                    <p>Advanced to the final round among 100+ teams, recognised for rapid prototyping and technical execution under pressure.</p>
+                </div>
+            </div>
+            <div class="exp-divider"></div>
+        </div>
+    </section>
+
+    <!-- CONTACT / FOOTER -->
+    <footer class="footer" id="contact">
+        <div class="footer-inner">
+            <div class="footer-top js-reveal">
+                <p class="mono footer-eyebrow">Ready to build?</p>
+                <a href="mailto:pravinanbalagan2@gmail.com" class="footer-email" id="footer-cta">
+                    pravinanbalagan2<br>@gmail.com
+                </a>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-links">
+                    <a href="https://github.com/A-Pravin02" target="_blank" rel="noopener noreferrer" id="github-link" class="mono">GitHub ↗</a>
+                    <a href="https://linkedin.com/in/pravinanbalagan" target="_blank" rel="noopener noreferrer" id="linkedin-link" class="mono">LinkedIn ↗</a>
+                </div>
+                <span class="mono footer-copy">© 2026 Pravin Anbalagan</span>
+            </div>
+
+            <div class="footer-wordmark" aria-hidden="true">Pravin</div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
