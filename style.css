@@ -648,11 +648,15 @@ body.cursor-active .cursor {
 .footer-links {
     display: flex;
     gap: 2rem;
+    position: relative;
+    z-index: 1;
 }
 .footer-links a {
     color: var(--text-2);
     font-size: 0.72rem;
     transition: color 0.2s;
+    position: relative;
+    z-index: 1;
 }
 .footer-links a:hover { color: var(--accent); }
 
@@ -669,6 +673,7 @@ body.cursor-active .cursor {
     cursor: default;
     margin-top: 3rem;
     user-select: none;
+    pointer-events: none;
     transition: -webkit-text-stroke-color 0.5s ease;
 }
 .footer-wordmark:hover { -webkit-text-stroke-color: rgba(212, 255, 110, 0.15); }
