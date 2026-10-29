@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   LAYOUT — rail, hero, and the page sections.
+   LAYOUT — top nav, hero, and the page sections.
    ═══════════════════════════════════════════════════════════ */
 
 /* ── Ambient background ───────────────────────────────────── */
@@ -64,93 +64,9 @@
   }
 }
 
-/* ── Console rail (desktop) ───────────────────────────────── */
-.rail {
-  position: fixed;
-  inset-block: 0;
-  left: 0;
-  width: var(--rail);
-  z-index: 60;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding-block: var(--s-5);
-  border-right: 1px solid var(--line);
-  background: color-mix(in oklab, var(--bg) 82%, transparent);
-  backdrop-filter: blur(8px);
-}
-
-@media (min-width: 900px) {
-  .rail {
-    display: flex;
-  }
-}
-
-.rail__mark {
-  font-family: var(--display);
-  font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  color: var(--ink);
-}
-
-.rail__nav {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
-}
-
-.rail__link {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  position: relative;
-  color: var(--ink-3);
-  transition: color var(--fast) var(--ease);
-}
-
-.rail__link span {
-  font-family: var(--mono);
-  font-size: 0.5625rem;
-  letter-spacing: 0.1em;
-  writing-mode: vertical-rl;
-  text-transform: uppercase;
-}
-
-.rail__link::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 2px;
-  height: 0;
-  translate: 0 -50%;
-  background: var(--violet);
-  transition: height var(--mid) var(--ease);
-}
-
-.rail__link:hover {
-  color: var(--ink-2);
-}
-
-.rail__link[aria-current='true'] {
-  color: var(--ink);
-}
-
-.rail__link[aria-current='true']::before {
-  height: 22px;
-}
-
-.rail__foot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--s-3);
-}
-
-/* ── Top bar ──────────────────────────────────────────────── */
+/* ── Top bar ──────────────────────────────────────────────────
+   One nav, always visible, with words on every control. Replaces an
+   earlier sideways rail that was unreadable and hid what it did. */
 .topbar {
   position: fixed;
   top: 0;
@@ -159,57 +75,121 @@
   z-index: 55;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--s-4);
   padding: var(--s-3) var(--gutter);
-  border-bottom: 1px solid transparent;
-  transition:
-    background-color var(--mid) var(--ease),
-    border-color var(--mid) var(--ease);
-}
-
-@media (min-width: 900px) {
-  .topbar {
-    left: var(--rail);
-  }
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
 }
 
 .topbar.is-stuck {
-  background: color-mix(in oklab, var(--bg) 86%, transparent);
-  backdrop-filter: blur(10px);
-  border-bottom-color: var(--line);
+  background: color-mix(in oklab, var(--bg) 96%, transparent);
+  border-bottom-color: var(--line-2);
 }
 
 .topbar__name {
   font-family: var(--display);
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
 }
 
-@media (min-width: 900px) {
-  .topbar__name {
-    opacity: 0;
-    transition: opacity var(--mid) var(--ease);
-  }
+/* Section links */
+.topnav {
+  display: none;
+  align-items: center;
+  gap: var(--s-1);
+  margin-inline: auto;
+}
 
-  .topbar.is-stuck .topbar__name {
-    opacity: 1;
+@media (min-width: 1040px) {
+  .topnav {
+    display: flex;
   }
+}
+
+.topnav a {
+  position: relative;
+  padding: 0.5rem 0.8rem;
+  border-radius: var(--radius);
+  font-size: var(--t-sm);
+  font-weight: 500;
+  color: var(--ink-2);
+  transition:
+    color var(--fast) var(--ease),
+    background-color var(--fast) var(--ease);
+}
+
+.topnav a:hover {
+  color: var(--ink);
+  background: rgba(245, 245, 247, 0.07);
+}
+
+.topnav a[aria-current='true'] {
+  color: var(--ink);
+}
+
+.topnav a[aria-current='true']::after {
+  content: '';
+  position: absolute;
+  left: 0.8rem;
+  right: 0.8rem;
+  bottom: 0.15rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--violet);
 }
 
 .topbar__tools {
   display: flex;
   align-items: center;
   gap: var(--s-2);
+  margin-left: auto;
+}
+
+@media (min-width: 1040px) {
+  .topbar__tools {
+    margin-left: 0;
+  }
+}
+
+.topbar__tools .btn {
+  padding: 0.45rem 0.75rem;
+  font-size: var(--t-sm);
+}
+
+.topbar__search {
+  display: none;
+}
+
+.topbar__search kbd {
+  margin-left: var(--s-1);
+}
+
+.topbar__feature {
+  display: none;
+}
+
+@media (min-width: 720px) {
+  .topbar__feature {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 900px) {
+  .topbar__search {
+    display: inline-flex;
+  }
 }
 
 .icon-btn {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  color: var(--ink-2);
-  border: 1px solid transparent;
+  width: 38px;
+  height: 38px;
+  color: var(--ink);
+  border: 1px solid var(--line-2);
   border-radius: var(--radius);
   transition:
     color var(--fast) var(--ease),
@@ -218,34 +198,14 @@
 }
 
 .icon-btn:hover {
-  color: var(--ink);
-  border-color: var(--line-2);
-  background: rgba(245, 245, 247, 0.04);
+  border-color: var(--line-3);
+  background: rgba(245, 245, 247, 0.08);
 }
 
-.kbd-hint {
-  display: none;
-  align-items: center;
-  gap: var(--s-2);
-  padding: 0.3rem 0.6rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  color: var(--ink-3);
-  font-family: var(--mono);
-  font-size: var(--t-xs);
-  transition:
-    color var(--fast) var(--ease),
-    border-color var(--fast) var(--ease);
-}
-
-.kbd-hint:hover {
-  color: var(--ink-2);
-  border-color: var(--line-2);
-}
-
-@media (min-width: 720px) {
-  .kbd-hint {
-    display: inline-flex;
+/* Declared after .icon-btn so it wins on source order, not specificity. */
+@media (min-width: 1040px) {
+  .topbar__burger {
+    display: none;
   }
 }
 
@@ -613,61 +573,27 @@
   margin-top: var(--s-5);
 }
 
-/* Archive list */
-.archive {
-  border-top: 1px solid var(--line-2);
-  margin-top: var(--s-8);
+/* Screenshot slot for the projects without an interactive demo, so they
+   carry the same visual weight as the two that have one. */
+.spread__visual {
+  margin: var(--s-5) 0 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: clip;
+  background: var(--surface);
 }
 
-.archive__row {
-  display: grid;
-  gap: var(--s-3) var(--s-5);
+.spread__visual img {
   width: 100%;
-  padding-block: var(--s-5);
-  border-bottom: 1px solid var(--line);
-  text-align: left;
-  position: relative;
-  transition:
-    background-color var(--fast) var(--ease),
-    padding-inline var(--mid) var(--ease);
+  max-height: 520px;
+  object-fit: cover;
+  object-position: center;
 }
 
-@media (min-width: 860px) {
-  .archive__row {
-    grid-template-columns: 4.5rem minmax(0, 1.2fr) minmax(0, 1.6fr) auto;
-    align-items: center;
-  }
-
-  .archive__row:hover,
-  .archive__row:focus-visible {
-    background: rgba(245, 245, 247, 0.025);
-    padding-inline: var(--s-4);
-  }
-}
-
-.archive__row h3 {
-  font-size: var(--t-h3);
-  font-weight: 500;
-}
-
-.archive__row p {
-  color: var(--ink-2);
-  font-size: var(--t-sm);
-  max-width: 48ch;
-}
-
-.archive__go {
-  color: var(--ink-3);
-  font-family: var(--mono);
-  font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: color var(--fast) var(--ease);
-}
-
-.archive__row:hover .archive__go,
-.archive__row:focus-visible .archive__go {
-  color: var(--cyan);
+.spread__visual figcaption {
+  padding: var(--s-4);
+  border-top: 1px solid var(--line);
+  background: color-mix(in oklab, var(--bg) 55%, transparent);
 }
 
 /* Static pipeline strip (used for the vision project) */
@@ -916,19 +842,10 @@ a.skill:hover .skill__ev {
   color: var(--ink-3);
 }
 
-.footer__secret {
-  font-family: var(--mono);
-  font-size: var(--t-xs);
-  letter-spacing: 0.08em;
-  color: var(--ink-3);
-  border-bottom: 1px dashed var(--line-2);
-  padding-bottom: 2px;
-  transition: color var(--fast) var(--ease);
-}
-
-.footer__secret:hover {
-  color: var(--cyan);
-  border-color: var(--cyan);
+.footer__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
 }
 
 /* ── Back to top ──────────────────────────────────────────── */

@@ -6,8 +6,8 @@ build step, no bundler, nothing to install.
 Two things in here are more than a page: an interactive walkthrough of the
 [AgentBridge](https://github.com/A-Pravin02/Agentbridge) authorization pipeline and of the
 [PRAXIS](https://github.com/A-Pravin02/praxis-neurosymbolic) reasoning architecture. There is also a
-simulated terminal (`Ctrl/Cmd + K` → "Open terminal", or the glyph in the top bar) and a playable
-game, **System Override**, reachable from the footer.
+simulated terminal and a playable game, **System Override** — both opened from labelled buttons in
+the top bar and in the footer.
 
 ## Run it locally
 
@@ -36,9 +36,10 @@ All copy and data live in `assets/js/data/`. Nothing else needs touching to add 
 
 Append an object to the array in `projects.js`.
 
-- `featured: true` gives it a full editorial spread. `featured: false` puts it in the archive list,
-  where it opens in the detail dialog.
-- `demo: 'pipeline' | 'reasoning'` mounts one of the interactive demos. Omit it for a normal project.
+- Every project gets the same full-width spread, in array order. `featured: true` only marks the two
+  that carry an interactive demo — it does not demote anything else.
+- `demo: 'pipeline' | 'reasoning'` mounts one of the interactive demos in the visual slot. Omit it
+  and the project's `image` fills that slot instead.
 - Every key under `details` is optional — a block that has no content is simply not rendered. So a
   project with only `problem` and `limitations` renders cleanly.
 - `links.source` and `links.demo` each render a button only when set. Leave them `null` rather than
@@ -94,13 +95,13 @@ publish directory to `.`.
 index.html              page shell, dialogs
 assets/css/
   tokens.css            colour, type scale, spacing, motion, resets
-  layout.css            rail, hero, sections
+  layout.css            top nav, hero, sections
   features.css          cursor, dialogs, demos, terminal, game
 assets/js/
   main.js               bootstrap and keyboard shortcuts
   data/                 all editable content
   sections.js           about, achievements, skills, contact
-  projects-view.js      spreads, archive, detail dialog
+  projects-view.js      project spreads and detail dialog
   agentbridge.js        pipeline demo
   praxis.js             architecture diagram demo
   terminal.js           terminal commands

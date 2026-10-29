@@ -194,7 +194,7 @@ export function initReveals(root = document) {
 export function initChrome() {
   const topbar = $('#topbar');
   const toTop = $('#to-top');
-  const railLinks = $$('#rail-nav .rail__link');
+  const navLinks = $$('#topnav a, #drawer a[href^="#"]');
 
   // Sticky bar + back-to-top, from a sentinel rather than a scroll listener.
   const sentinel = document.createElement('div');
@@ -213,7 +213,7 @@ export function initChrome() {
     $('.skip-link')?.focus({ preventScroll: true });
   });
 
-  // Active section in the rail.
+  // Active section in the nav.
   const sections = ['#about', '#projects', '#achievements', '#skills', '#contact']
     .map((id) => document.querySelector(id))
     .filter(Boolean);
@@ -231,7 +231,7 @@ export function initChrome() {
             best = id;
           }
         }
-        for (const link of railLinks) {
+        for (const link of navLinks) {
           link.setAttribute('aria-current', String(link.getAttribute('href') === `#${best}`));
         }
       },

@@ -12,8 +12,8 @@
 
   /* ── Ink ────────────────────────────────────────────────── */
   --ink: #f5f5f7;
-  --ink-2: #9a9eac;
-  --ink-3: #6a6e7e;
+  --ink-2: #c6cad6; /* body copy — bright enough to read at a glance */
+  --ink-3: #959cad; /* metadata; still ~5:1 on the darkest surface */
 
   /* ── Accent — used sparingly ────────────────────────────── */
   --violet: #8665ff;
@@ -26,10 +26,10 @@
   --hold: #f5c655;
   --block: #ff6b7d;
 
-  /* ── Lines ──────────────────────────────────────────────── */
-  --line: rgba(245, 245, 247, 0.08);
-  --line-2: rgba(245, 245, 247, 0.14);
-  --line-3: rgba(245, 245, 247, 0.22);
+  /* ── Lines — visible, so interactive things read as interactive ── */
+  --line: rgba(245, 245, 247, 0.14);
+  --line-2: rgba(245, 245, 247, 0.26);
+  --line-3: rgba(245, 245, 247, 0.44);
 
   /* ── Type ───────────────────────────────────────────────── */
   --display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
@@ -60,7 +60,6 @@
   /* Fine grain tile. feTurbulence, kept at very low contrast. */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
 
-  --rail: 72px;
   --gutter: clamp(1.25rem, 5vw, 5.5rem);
   --measure: 62ch;
   --radius: 2px;
@@ -244,9 +243,11 @@ p {
 
 /* ── Buttons ──────────────────────────────────────────────── */
 .btn {
-  --btn-bg: transparent;
+  /* Default is a filled, bordered control. A bare 1px hairline on a dark
+     page does not read as clickable, so nothing here relies on one. */
+  --btn-bg: var(--surface-2);
   --btn-ink: var(--ink);
-  --btn-line: var(--line-2);
+  --btn-line: var(--line-3);
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -268,14 +269,15 @@ p {
 }
 
 .btn:hover {
-  --btn-line: var(--line-3);
-  --btn-bg: rgba(245, 245, 247, 0.04);
+  --btn-bg: #272c3d;
+  --btn-line: rgba(245, 245, 247, 0.62);
 }
 
 .btn--primary {
   --btn-bg: var(--ink);
-  --btn-ink: var(--bg);
+  --btn-ink: #0a0b10;
   --btn-line: var(--ink);
+  font-weight: 600;
 }
 
 .btn--primary:hover {
@@ -283,15 +285,29 @@ p {
   --btn-line: #fff;
 }
 
+/* For the one action per block that is the point of that block. */
+.btn--accent {
+  --btn-bg: var(--violet);
+  --btn-ink: #0a0b10;
+  --btn-line: var(--violet);
+  font-weight: 600;
+}
+
+.btn--accent:hover {
+  --btn-bg: #9d83ff;
+  --btn-line: #9d83ff;
+}
+
 .btn--ghost {
-  --btn-line: transparent;
+  --btn-bg: transparent;
+  --btn-line: var(--line-2);
   color: var(--ink-2);
-  padding-inline: 0.6rem;
 }
 
 .btn--ghost:hover {
   color: var(--ink);
-  --btn-line: var(--line);
+  --btn-bg: rgba(245, 245, 247, 0.06);
+  --btn-line: var(--line-3);
 }
 
 /* ── Tag / chip ───────────────────────────────────────────── */
@@ -302,7 +318,8 @@ p {
   font-size: var(--t-xs);
   letter-spacing: 0.04em;
   color: var(--ink-2);
-  border: 1px solid var(--line);
+  background: rgba(245, 245, 247, 0.05);
+  border: 1px solid var(--line-2);
   border-radius: var(--radius);
   white-space: nowrap;
 }
@@ -338,12 +355,6 @@ p {
 .section__index {
   flex: 0 0 auto;
   color: var(--ink-3);
-}
-
-@media (min-width: 900px) {
-  body {
-    padding-left: var(--rail);
-  }
 }
 
 /* ── Reveal on scroll (IntersectionObserver-driven) ───────── */

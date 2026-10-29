@@ -1,10 +1,10 @@
 /* ─────────────────────────────────────────────────────────────
    PROJECT SHOWCASE — editorial spreads for the featured work,
-   an archive list for the rest, and a shared detail dialog.
+   a shared detail dialog, and the visual slot each one carries.
    ───────────────────────────────────────────────────────────── */
 
 import { $, h, raw } from './utils.js';
-import { projects, featuredProjects, archiveProjects, getProject } from './data/projects.js';
+import { projects, featuredProjects, getProject } from './data/projects.js';
 import { mountPipeline } from './agentbridge.js';
 import { mountReasoning } from './praxis.js';
 
@@ -13,14 +13,10 @@ const ARROW = raw(
 );
 
 export function renderProjects() {
-  $('#projects-body').innerHTML = h`
-    ${featuredProjects.map((project) => spread(project))}
-
-    <div class="archive">
-      <p class="mono" style="padding-block: var(--s-3)">Also built</p>
-      ${archiveProjects.map((project) => archiveRow(project))}
-    </div>
-  `.toString();
+  // Every project gets the same editorial spread. The two with demos get an
+  // interactive panel in the visual slot; the rest get their screenshot
+  // there — but the same heading, summary, tech and actions.
+  $('#projects-body').innerHTML = h`${projects.map((project) => spread(project))}`.toString();
 
   // Mount the interactive demos into their placeholders.
   for (const project of featuredProjects) {
@@ -52,7 +48,7 @@ function spread(project) {
             ${project.tech.map((t) => h`<span class="tag">${t}</span>`)}
           </div>
           <div class="spread__actions">
-            <button class="btn btn--primary" data-project="${project.id}" data-cursor="project" data-magnetic>
+            <button class="btn btn--accent" data-project="${project.id}" data-cursor="project" data-magnetic>
               Read the write-up
             </button>
             ${sourceLink(project)}
@@ -62,9 +58,41 @@ function spread(project) {
         </div>
       </div>
 
-      <div id="demo-${project.id}" class="reveal"></div>
+      ${project.demo ? h`<div id="demo-${project.id}" class="reveal"></div>` : visual(project)}
     </article>
   `;
+}
+
+/* The visual slot for a project without an interactive demo. */
+function visual(project) {
+  if (!project.image) {
+    return project.pipeline
+      ? h`<ul class="flow reveal" style="margin-top: var(--s-5)">
+            ${project.pipeline.map((stage) => h`<li>${stage.label}</li>`)}
+          </ul>`
+      : '';
+  }
+
+  return h`
+    <figure class="spread__visual reveal">
+      <img
+        src="${project.image.src}"
+        alt="${project.image.alt}"
+        width="1024"
+        height="1024"
+        loading="lazy"
+        decoding="async"
+      />
+      ${
+        project.pipeline
+          ? h`<figcaption>
+                <ul class="flow" style="margin: 0">
+                  ${project.pipeline.map((stage) => h`<li>${stage.label}</li>`)}
+                </ul>
+              </figcaption>`
+          : ''
+      }
+    </figure>`;
 }
 
 function sourceLink(project) {
@@ -81,28 +109,12 @@ function demoLink(project) {
   </a>`;
 }
 
-/* ══ ARCHIVE ROW ═══════════════════════════════════════════ */
-
-function archiveRow(project) {
-  return h`
-    <button class="archive__row reveal" data-project="${project.id}" data-cursor="project" id="project-${project.id}">
-      <span class="mono">${project.year}</span>
-      <span>
-        <h3>${project.title}</h3>
-        <span class="mono" style="text-transform: none">${project.category}</span>
-      </span>
-      <p>${project.tagline}</p>
-      <span class="archive__go">Open</span>
-    </button>
-  `;
-}
-
 /* ══ DETAIL DIALOG ═════════════════════════════════════════ */
 
 function wireDetailDialog() {
   const dialog = $('#project-detail');
 
-  // One delegated handler for every entry point: spreads, archive rows,
+  // One delegated handler for every entry point: spreads,
   // skill chips, the palette and the terminal all dispatch through here.
   document.addEventListener('click', (event) => {
     const trigger = event.target.closest?.('[data-project]');
@@ -264,12 +276,7 @@ export function openFromHash() {
   if (!match) return;
   const project = getProject(match[1]);
   if (!project) return;
-  // Featured projects have their own place on the page; only the archive
-  // entries need the dialog opened for them.
-  if (project.featured) {
-    document.getElementById(`project-${project.id}`)?.scrollIntoView({ block: 'start' });
-  } else {
-    openProject(project.id);
-  }
+  // Every project has its own place on the page now, so scroll to it.
+  document.getElementById(`project-${project.id}`)?.scrollIntoView({ block: 'start' });
 }
 
