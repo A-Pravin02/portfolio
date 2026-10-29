@@ -1,0 +1,70 @@
+/* ─────────────────────────────────────────────────────────────
+   PROFILE — single source of truth for identity + contact.
+   Edit values here; the UI reads them and hides anything empty.
+   ───────────────────────────────────────────────────────────── */
+
+export const profile = {
+  name: 'Pravin Anbalagan',
+  shortName: 'Pravin',
+  role: 'CSBS undergraduate · AI systems',
+  location: 'Vellore, India',
+  timeZone: 'Asia/Kolkata',
+
+  // Hero copy
+  eyebrow: 'Independently curious. Engineering-driven.',
+  headline: ['Building intelligent systems.', 'Exploring what comes next.'],
+  intro:
+    "I'm Pravin Anbalagan — a Computer Science and Business Systems student at VIT Vellore working on " +
+    'intelligent systems, AI research, software engineering, and quantitative thinking.',
+
+  // What I'm on right now. Shown as the hero status line.
+  // Set `availability` only when it is actually true; leave null to hide it.
+  currentFocus: 'Currently building AgentBridge — an authorization layer for AI agents',
+  availability: null, // e.g. { label: 'Open to AI/ML internships', tone: 'open' }
+
+  about: [
+    'I study Computer Science and Business Systems at VIT Vellore. Most of what I build starts with ' +
+      'the same question — how does this actually work underneath? — and ends with a prototype that ' +
+      'lets me check the answer.',
+    'That has taken me through a transformer written from scratch so I could see attention compute, a ' +
+      '3D face reconstruction pipeline where I had to debug surface normals by hand, and an ' +
+      'authorization layer that decides whether an AI agent is allowed to spend money. The subjects ' +
+      'differ; the method does not.',
+    'Right now I spend most of my time on neuro-symbolic reasoning and on the security problems that ' +
+      'appear once agents start acting on their own.',
+  ],
+
+  interests: [
+    { title: 'AI and machine learning', note: 'Transformers from first principles, training dynamics, evaluation.' },
+    { title: 'Neuro-symbolic systems', note: 'Rule engines that verify what a language model claims.' },
+    { title: 'AI-agent security', note: 'Identity, policy, budgets, and audit trails for autonomous agents.' },
+    { title: 'Software engineering', note: 'Typed boundaries, deterministic cores, tests that mean something.' },
+    { title: 'Quantitative finance', note: 'Market structure and systematic strategy as an engineering problem.' },
+    { title: 'Data science', note: 'NLP pipelines, topic modelling, turning noisy text into decisions.' },
+  ],
+
+  education: {
+    degree: 'B.Tech, Computer Science and Business Systems',
+    institution: 'Vellore Institute of Technology, Vellore',
+    period: '2024 — 2028',
+    detail: 'CGPA 8.68 / 10',
+  },
+
+  // Links. Anything left as null or '' is omitted from the UI entirely.
+  links: {
+    email: 'pravinanbalagan2@gmail.com',
+    github: 'https://github.com/A-Pravin02',
+    linkedin: 'https://www.linkedin.com/in/pravinanbalagan',
+    resume: 'assets/docs/Pravin-Anbalagan-Resume.pdf',
+    // phone intentionally omitted from the public site
+  },
+
+  contact: {
+    headline: 'Have an interesting problem? Let’s build something.',
+    body:
+      'Research ideas, agent security, or anything that needs a prototype before it needs a plan — ' +
+      'email is the fastest way to reach me.',
+  },
+
+  photo: { src: 'assets/img/pravin.webp', alt: 'Portrait of Pravin Anbalagan' },
+};

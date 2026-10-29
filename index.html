@@ -1,293 +1,420 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pravin Anbalagan — Portfolio</title>
-    <meta name="description" content="Pravin Anbalagan — Software Engineer. CS undergrad at VIT. Building at the intersection of AI/ML and Finance.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pravin Anbalagan — Building intelligent systems</title>
+    <meta
+      name="description"
+      content="Pravin Anbalagan — Computer Science and Business Systems student at VIT Vellore working on neuro-symbolic AI, AI-agent security, and software engineering."
+    />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#08090d" />
 
-    <!-- Custom Cursor -->
-    <div class="cursor" id="cursor"></div>
-    <div class="cursor-dot" id="cursor-dot"></div>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Pravin Anbalagan — Building intelligent systems" />
+    <meta
+      property="og:description"
+      content="AI systems, neuro-symbolic reasoning, and agent security. Projects, research, and a terminal you can type into."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Navigation -->
-    <nav class="nav" id="main-nav">
-        <div class="nav-brand">
-            <a class="nav-logo" href="#">Pravin<span>.</span></a>
-            <span class="nav-portfolio-label">Portfolio</span>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#work" data-text="Work">Work</a></li>
-            <li><a href="#about" data-text="About">About</a></li>
-            <li><a href="#experience" data-text="Experience">Experience</a></li>
-            <li><a href="#contact" data-text="Contact">Contact</a></li>
-        </ul>
-        <button class="hamburger" id="hamburger" aria-label="Menu">
-            <span></span><span></span>
-        </button>
-    </nav>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="assets/css/tokens.css" />
+    <link rel="stylesheet" href="assets/css/layout.css" />
+    <link rel="stylesheet" href="assets/css/features.css" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2308090D'/%3E%3Cpath d='M10 24V8h7a5 5 0 010 10h-7' stroke='%238665FF' stroke-width='2.5' fill='none'/%3E%3C/svg%3E" />
+    <script type="module" src="assets/js/main.js"></script>
+  </head>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-nav" id="mobile-nav">
-        <a href="#work">Work</a>
-        <a href="#about">About</a>
-        <a href="#experience">Experience</a>
-        <a href="#contact">Contact</a>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- Ambient background. Decorative only. -->
+    <div class="ambient" aria-hidden="true">
+      <div class="ambient__wash"></div>
+      <div class="ambient__grid"></div>
+      <div class="ambient__grain"></div>
+      <div class="ambient__light" id="pointer-light"></div>
     </div>
 
-    <!-- HERO -->
-    <section class="hero" id="hero">
-        <div class="hero-meta">
-            <span class="mono">VIT Vellore — India</span>
-            <span class="mono">Pravin's Portfolio</span>
+    <!-- Cursor indicator. Additive: the native cursor stays visible. -->
+    <div class="cursor" id="cursor" data-mode="default" aria-hidden="true">
+      <span class="cursor__ring"></span>
+      <span class="cursor__label" id="cursor-label"></span>
+    </div>
+
+    <!-- ══ CONSOLE RAIL (desktop) ══════════════════════════ -->
+    <div class="rail" role="navigation" aria-label="Sections">
+      <a class="rail__mark" href="#top" aria-label="Back to top">PA</a>
+
+      <nav class="rail__nav" id="rail-nav">
+        <a class="rail__link" href="#about"><span>About</span></a>
+        <a class="rail__link" href="#projects"><span>Work</span></a>
+        <a class="rail__link" href="#achievements"><span>Record</span></a>
+        <a class="rail__link" href="#skills"><span>Stack</span></a>
+        <a class="rail__link" href="#contact"><span>Contact</span></a>
+      </nav>
+
+      <div class="rail__foot">
+        <button class="icon-btn" data-open="terminal" aria-label="Open terminal" data-cursor="terminal">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m5 8 4 4-4 4" />
+            <path d="M13 16h6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ TOP BAR ═════════════════════════════════════════ -->
+    <header class="topbar" id="topbar">
+      <a class="topbar__name" href="#top">Pravin Anbalagan</a>
+
+      <div class="topbar__tools">
+        <button class="kbd-hint" data-open="palette">
+          <span>Search</span>
+          <kbd id="palette-key">Ctrl K</kbd>
+        </button>
+
+        <button class="icon-btn" data-open="terminal" aria-label="Open terminal" data-cursor="terminal">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2.5" y="4" width="19" height="16" rx="2" />
+            <path d="m7 9 3 3-3 3" />
+            <path d="M13 15h4" />
+          </svg>
+        </button>
+
+        <button class="icon-btn" id="drawer-open" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <path d="M3 7h18M3 12h18M3 17h18" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile drawer -->
+    <nav class="drawer" id="drawer" hidden aria-label="Menu">
+      <button class="icon-btn drawer__close" id="drawer-close" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18" />
+        </svg>
+      </button>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#achievements">Achievements</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+      <a href="#" data-open="terminal">Terminal</a>
+      <a href="#" data-open="game">System Override</a>
+    </nav>
+
+    <main id="main">
+      <!-- ══ HERO ══════════════════════════════════════════ -->
+      <section class="hero" id="top">
+        <div class="hero__figure" aria-hidden="true">
+          <svg viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="hg1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#8665FF" stop-opacity="0.5" />
+                <stop offset="100%" stop-color="#55DDF5" stop-opacity="0.08" />
+              </linearGradient>
+              <linearGradient id="hg2" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#55DDF5" stop-opacity="0.35" />
+                <stop offset="100%" stop-color="#8665FF" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <g class="plx" data-depth="18">
+              <circle cx="400" cy="400" r="286" stroke="url(#hg1)" stroke-width="1" />
+              <circle cx="400" cy="400" r="208" stroke="rgba(245,245,247,0.07)" stroke-width="1" />
+            </g>
+            <g class="plx" data-depth="34">
+              <path d="M400 114 L686 400 L400 686 L114 400 Z" stroke="url(#hg2)" stroke-width="1" />
+              <path d="M400 186 L614 400 L400 614 L186 400 Z" stroke="rgba(245,245,247,0.06)" stroke-width="1" />
+            </g>
+            <g class="plx" data-depth="56">
+              <circle cx="400" cy="114" r="3.5" fill="#8665FF" />
+              <circle cx="686" cy="400" r="2.5" fill="#55DDF5" />
+              <circle cx="400" cy="686" r="2" fill="rgba(245,245,247,0.5)" />
+              <circle cx="114" cy="400" r="2.5" fill="#8665FF" />
+              <path d="M400 114 L686 400" stroke="rgba(134,101,255,0.22)" stroke-width="1" />
+              <path d="M114 400 L400 686" stroke="rgba(85,221,245,0.16)" stroke-width="1" />
+            </g>
+          </svg>
         </div>
 
-        <div class="hero-main">
-            <h1 class="hero-headline js-reveal">
-                <span class="line">Engineer.</span>
-                <span class="line">Analyst.</span>
-                <span class="line italic">Builder.</span>
+        <div class="hero__grid">
+          <div class="plx" data-depth="8">
+            <p class="mono hero__eyebrow" id="hero-eyebrow">Independently curious. Engineering-driven.</p>
+
+            <h1 id="hero-headline">
+              <span class="line">Building intelligent systems.</span>
+              <span class="line">Exploring what comes next.</span>
             </h1>
+
+            <p class="lead hero__intro" id="hero-intro">
+              I’m Pravin Anbalagan — a Computer Science and Business Systems student at VIT Vellore
+              working on intelligent systems, AI research, software engineering, and quantitative
+              thinking.
+            </p>
+
+            <div class="hero__actions">
+              <a class="btn btn--primary" href="#projects" data-magnetic>Explore my work</a>
+              <a class="btn" href="#contact" data-magnetic>Get in touch</a>
+            </div>
+          </div>
+
+          <aside class="hero__panel plx" data-depth="-14" aria-label="Current status">
+            <dl>
+              <div>
+                <dt class="mono">Now</dt>
+                <dd id="hero-focus"><span class="status-dot"></span>Currently building AgentBridge</dd>
+              </div>
+              <div>
+                <dt class="mono">Local time</dt>
+                <dd><span id="hero-clock" class="mono" style="font-size: var(--t-sm); text-transform: none; color: var(--ink)">—</span> · Vellore, India</dd>
+              </div>
+              <div>
+                <dt class="mono">Reading</dt>
+                <dd>Neuro-symbolic reasoning, agent authorization, market microstructure</dd>
+              </div>
+            </dl>
+          </aside>
         </div>
 
-        <div class="hero-bottom">
-            <div class="hero-desc js-reveal">
-                <p>CS undergrad building at the intersection of</p>
-                <p><strong>Artificial Intelligence</strong> and <strong>Financial Systems.</strong></p>
-            </div>
-            <div class="hero-cta js-reveal">
-                <a href="#work" class="btn-outline" id="hero-view-work">View work <span class="arr">↓</span></a>
-                <a href="mailto:pravinanbalagan2@gmail.com" class="btn-solid" id="hero-contact">Get in touch</a>
-            </div>
+        <p class="mono hero__scroll" aria-hidden="true"><i></i>Scroll</p>
+      </section>
+
+      <!-- ══ ABOUT ═════════════════════════════════════════ -->
+      <section class="section" id="about" aria-labelledby="about-h">
+        <div class="section__head">
+          <p class="mono section__index">01 — About</p>
+          <h2 id="about-h">The person behind the systems</h2>
         </div>
+        <div id="about-body"></div>
+      </section>
 
-        <div class="hero-domains js-reveal">
-            <span class="domain-tag">[AI / ML]</span>
-            <span class="domain-tag">[Data Structures]</span>
-            <span class="domain-tag">[Finance]</span>
-            <span class="domain-tag">[Investment Banking]</span>
-            <span class="domain-tag">[Hedge Funds]</span>
-            <span class="domain-tag">[Full-Stack]</span>
+      <!-- ══ PROJECTS ══════════════════════════════════════ -->
+      <section class="section" id="projects" aria-labelledby="projects-h">
+        <div class="section__head">
+          <p class="mono section__index">02 — Projects</p>
+          <h2 id="projects-h">Things I built to find out how they work</h2>
         </div>
+        <div id="projects-body"></div>
+      </section>
 
-        <div class="hero-scroll-indicator">
-            <div class="scroll-track"><div class="scroll-thumb"></div></div>
+      <!-- ══ ACHIEVEMENTS ══════════════════════════════════ -->
+      <section class="section" id="achievements" aria-labelledby="ach-h">
+        <div class="section__head">
+          <p class="mono section__index">03 — Record</p>
+          <h2 id="ach-h">What is verifiable</h2>
         </div>
-    </section>
+        <div id="achievements-body"></div>
+      </section>
 
-    <!-- WORK -->
-    <section class="work" id="work">
-        <div class="section-label">
-            <span class="mono">Selected work</span>
-            <span class="mono label-num">04 projects</span>
+      <!-- ══ SKILLS ════════════════════════════════════════ -->
+      <section class="section" id="skills" aria-labelledby="skills-h">
+        <div class="section__head">
+          <p class="mono section__index">04 — Stack</p>
+          <h2 id="skills-h">Tools, and where I have used them</h2>
         </div>
+        <div id="skills-body"></div>
+      </section>
 
-        <!-- Project 01 -->
-        <article class="project-row js-reveal" id="proj-agrow" tabindex="0">
-            <div class="proj-left">
-                <span class="proj-num mono">01</span>
-                <div class="proj-image">
-                    <img src="agrow.png" alt="Agrow agricultural marketplace" loading="lazy">
-                </div>
-            </div>
-            <div class="proj-right">
-                <div class="proj-tags">
-                    <span>[Python]</span>
-                    <span>[SQL]</span>
-                    <span>[REST APIs]</span>
-                    <span>[Blockchain]</span>
-                </div>
-                <h2 class="proj-title">Agrow</h2>
-                <p class="proj-desc">Agricultural marketplace eliminating middlemen — built with full crop traceability and location-based order algorithms.</p>
-                <div class="proj-footer">
-                    <span class="mono proj-year">2025</span>
-                    <a class="proj-link" href="#" aria-label="View Agrow project">View →</a>
-                </div>
-            </div>
-        </article>
-
-        <div class="row-divider"></div>
-
-        <!-- Project 02 -->
-        <article class="project-row js-reveal" id="proj-football" tabindex="0">
-            <div class="proj-left">
-                <span class="proj-num mono">02</span>
-                <div class="proj-image">
-                    <img src="football.png" alt="FootballGPT transformer model" loading="lazy">
-                </div>
-            </div>
-            <div class="proj-right">
-                <div class="proj-tags">
-                    <span>[Python]</span>
-                    <span>[PyTorch]</span>
-                    <span>[Transformer]</span>
-                </div>
-                <h2 class="proj-title">FootballGPT</h2>
-                <p class="proj-desc">Full Transformer architecture trained from scratch for football commentary and Q&amp;A. Zero external APIs.</p>
-                <div class="proj-footer">
-                    <span class="mono proj-year">2025</span>
-                    <a class="proj-link" href="#" aria-label="View FootballGPT project">View →</a>
-                </div>
-            </div>
-        </article>
-
-        <div class="row-divider"></div>
-
-        <!-- Project 03 -->
-        <article class="project-row js-reveal" id="proj-face3d" tabindex="0">
-            <div class="proj-left">
-                <span class="proj-num mono">03</span>
-                <div class="proj-image">
-                    <img src="face_3d.png" alt="Deep3DFaceRecon 3D face reconstruction" loading="lazy">
-                </div>
-            </div>
-            <div class="proj-right">
-                <div class="proj-tags">
-                    <span>[Computer Vision]</span>
-                    <span>[OpenCV]</span>
-                    <span>[ResNet-50]</span>
-                </div>
-                <h2 class="proj-title">Deep3DFaceRecon</h2>
-                <p class="proj-desc">3D face reconstruction pipeline from single RGB images with real-time mesh visualization.</p>
-                <div class="proj-footer">
-                    <span class="mono proj-year">2024</span>
-                    <a class="proj-link" href="#" aria-label="View Deep3DFaceRecon project">View →</a>
-                </div>
-            </div>
-        </article>
-
-        <div class="row-divider"></div>
-
-        <!-- Project 04 -->
-        <article class="project-row js-reveal" id="proj-phyto" tabindex="0">
-            <div class="proj-left">
-                <span class="proj-num mono">04</span>
-                <div class="proj-image featured-img">
-                    <img src="phyto.png" alt="Phytochemicals NLP product analysis dashboard" loading="lazy">
-                    <div class="featured-label mono">Featured</div>
-                </div>
-            </div>
-            <div class="proj-right">
-                <div class="proj-tags">
-                    <span>[NLP]</span>
-                    <span>[ML]</span>
-                    <span>[Sentiment Analysis]</span>
-                    <span>[Python]</span>
-                </div>
-                <h2 class="proj-title">Phytochemicals<br>Product Analysis</h2>
-                <p class="proj-desc">Comprehensive NLP pipeline analysing phytochemical &amp; wellness product reviews — extracts sentiment, detects safety concerns, discovers market trends, and generates business intelligence reports.</p>
-                <div class="proj-footer">
-                    <span class="mono proj-year">2026</span>
-                    <a class="proj-link" href="#" aria-label="View Phytochemicals project">View →</a>
-                </div>
-            </div>
-        </article>
-
-        <div class="row-divider"></div>
-    </section>
-
-    <!-- ABOUT -->
-    <section class="about" id="about">
-        <div class="section-label">
-            <span class="mono">About</span>
+      <!-- ══ CONTACT ═══════════════════════════════════════ -->
+      <section class="section contact" id="contact" aria-labelledby="contact-h">
+        <div class="section__head">
+          <p class="mono section__index">05 — Contact</p>
         </div>
+        <div id="contact-body"></div>
+      </section>
+    </main>
 
-        <div class="about-grid">
-            <!-- Left: big statement -->
-            <div class="about-statement js-reveal">
-                <h2>I work where<br><em>machines learn</em><br>and markets move.</h2>
-                <p>B.Tech Computer Science Engineering student at Vellore Institute of Technology. Equally obsessed with building AI systems and understanding how capital flows through financial markets.</p>
-            </div>
-
-            <!-- Right: structured info -->
-            <div class="about-details">
-                <div class="detail-block js-reveal">
-                    <h3 class="mono detail-label">[ Technical ]</h3>
-                    <ul>
-                        <li>Python, C/C++, Java</li>
-                        <li>TensorFlow, PyTorch, OpenCV</li>
-                        <li>SQL, REST APIs, Git</li>
-                        <li>NLTK, spaCy, Transformers</li>
-                        <li>Data Structures &amp; Algorithms</li>
-                    </ul>
-                </div>
-
-                <div class="detail-block js-reveal">
-                    <h3 class="mono detail-label">[ Finance &amp; Markets ]</h3>
-                    <ul>
-                        <li>Investment Banking</li>
-                        <li>Hedge Fund Strategies</li>
-                        <li>Quantitative Finance</li>
-                        <li>Financial Modelling</li>
-                        <li>Capital Markets</li>
-                    </ul>
-                </div>
-
-                <div class="detail-block js-reveal">
-                    <h3 class="mono detail-label">[ Education ]</h3>
-                    <ul>
-                        <li>B.Tech CSE — VIT Vellore</li>
-                        <li>Expected graduation: 2028</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- EXPERIENCE -->
-    <section class="experience" id="experience">
-        <div class="section-label">
-            <span class="mono">Experience</span>
-        </div>
-
-        <div class="exp-list">
-            <div class="exp-item js-reveal" tabindex="0">
-                <span class="mono exp-year">2026</span>
-                <div class="exp-body">
-                    <h3>Amman Try <span class="mono exp-role">[Software Engineering Intern]</span></h3>
-                    <p>Contributed to CRM operations by maintaining customer data pipelines, logging interaction histories, conducting structured customer outreach, and utilizing CRM platforms to support data-driven customer engagement and relationship management.</p>
-                </div>
-            </div>
-            <div class="exp-divider"></div>
-            <div class="exp-item js-reveal" tabindex="0">
-                <span class="mono exp-year">2026</span>
-                <div class="exp-body">
-                    <h3>Social Summer of Code <span class="mono exp-role">[Open Source Contributor]</span></h3>
-                    <p>Developed and merged features, resolved issues, and collaborated with maintainers via GitHub PRs across active open-source projects.</p>
-                </div>
-            </div>
-            <div class="exp-divider"></div>
-        </div>
-    </section>
-
-    <!-- CONTACT / FOOTER -->
-    <footer class="footer" id="contact">
-        <div class="footer-inner">
-            <div class="footer-top js-reveal">
-                <p class="mono footer-eyebrow">Ready to build?</p>
-                <a href="mailto:pravinanbalagan2@gmail.com" class="footer-email" id="footer-cta">
-                    pravinanbalagan2<br>@gmail.com
-                </a>
-            </div>
-
-            <div class="footer-bottom">
-                <div class="footer-links">
-                    <a href="https://github.com/A-Pravin02" target="_blank" rel="noopener noreferrer" id="github-link" class="mono">GitHub ↗</a>
-                    <a href="https://linkedin.com/in/pravinanbalagan" target="_blank" rel="noopener noreferrer" id="linkedin-link" class="mono">LinkedIn ↗</a>
-                </div>
-                <span class="mono footer-copy">© 2026 Pravin Anbalagan</span>
-            </div>
-
-            <div class="footer-wordmark" aria-hidden="true">Pravin</div>
-        </div>
+    <footer class="footer">
+      <p class="mono">Pravin Anbalagan · Built from scratch · <span id="year">2026</span></p>
+      <button class="footer__secret" data-open="game" data-cursor="play">
+        there is a hidden layer
+      </button>
     </footer>
 
-    <script src="script.js"></script>
-</body>
+    <noscript>
+      <p style="padding: 2rem var(--gutter); color: var(--ink-2)">
+        This portfolio renders its content with JavaScript. The full write-up of every project is also
+        in the repositories linked from
+        <a href="https://github.com/A-Pravin02" style="color: var(--cyan)">github.com/A-Pravin02</a>, and
+        you can reach me at
+        <a href="mailto:pravinanbalagan2@gmail.com" style="color: var(--cyan)">pravinanbalagan2@gmail.com</a>.
+      </p>
+    </noscript>
+
+    <button class="to-top" id="to-top" aria-label="Back to top">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 19V5M5 12l7-7 7 7" />
+      </svg>
+    </button>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- ══ DIALOGS ═════════════════════════════════════════ -->
+
+    <!-- Project detail -->
+    <dialog id="project-detail" closedby="any" aria-labelledby="detail-title">
+      <div class="dlg">
+        <div class="dlg__bar">
+          <p class="mono" id="detail-kicker">Project</p>
+          <h2 id="detail-title" class="visually-hidden">Project detail</h2>
+          <button class="icon-btn dlg__close" data-close aria-label="Close">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+        <div class="dlg__body" id="detail-body"></div>
+      </div>
+    </dialog>
+
+    <!-- Terminal -->
+    <dialog id="terminal" aria-labelledby="term-title">
+      <div class="term">
+        <div class="term__bar">
+          <span class="term__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <p class="term__title" id="term-title">pravin@portfolio — /bin/sh</p>
+          <button class="icon-btn dlg__close" data-close aria-label="Close terminal">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="term__out" id="term-out" tabindex="0" role="log" aria-live="polite" aria-label="Terminal output"></div>
+
+        <div>
+          <div class="term__quick" id="term-quick" aria-label="Quick commands"></div>
+          <form class="term__form" id="term-form" autocomplete="off">
+            <span class="term__prompt" aria-hidden="true">pravin@portfolio:~$</span>
+            <label class="visually-hidden" for="term-input">Enter a command</label>
+            <input
+              class="term__input"
+              id="term-input"
+              name="cmd"
+              type="text"
+              placeholder="type help"
+              autocomplete="off"
+              autocapitalize="off"
+              autocorrect="off"
+              spellcheck="false"
+            />
+          </form>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Command palette: a dialog the page stays interactive behind is
+         still a dialog, so <dialog popover> rather than showModal(). -->
+    <dialog id="palette" popover="manual" aria-labelledby="pal-title">
+      <h2 id="pal-title" class="visually-hidden">Command palette</h2>
+      <div class="pal__field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="color: var(--ink-3)" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <label class="visually-hidden" for="pal-input">Search sections, projects and commands</label>
+        <input id="pal-input" type="text" placeholder="Jump to a section, project, or command…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true" aria-controls="pal-list" aria-autocomplete="list" />
+        <button class="icon-btn" data-close aria-label="Close palette"><kbd>Esc</kbd></button>
+      </div>
+      <div class="pal__list" id="pal-list" role="listbox" aria-label="Results"></div>
+      <div class="pal__foot">
+        <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+        <span><kbd>↵</kbd> open</span>
+      </div>
+    </dialog>
+
+    <!-- Game -->
+    <dialog id="game" aria-labelledby="game-title">
+      <div class="game">
+        <div class="game__hud">
+          <span id="game-title">System Override</span>
+          <span>Fragments <b id="hud-frag">0/0</b></span>
+          <span>Time <b id="hud-time">0.0s</b></span>
+          <span class="spacer"></span>
+          <button class="icon-btn" id="game-pause" aria-label="Pause game">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="7" y="5" width="3.5" height="14" rx="1" />
+              <rect x="13.5" y="5" width="3.5" height="14" rx="1" />
+            </svg>
+          </button>
+          <button class="icon-btn dlg__close" data-close aria-label="Close game">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="game__stage">
+          <canvas class="game__canvas" id="game-canvas" width="560" height="560" role="img" aria-label="System Override play area"></canvas>
+
+          <div class="game__screen" id="screen-ready">
+            <p class="mono">Mission brief</p>
+            <h3>System Override</h3>
+            <p>
+              You are an autonomous agent inside a restricted environment. Collect every data fragment,
+              keep clear of the security sweeps, then reach the exit before the sweeps find you.
+            </p>
+            <div class="game__keys">
+              <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows — move</span>
+              <span><kbd>Esc</kbd> pause · <kbd>R</kbd> restart</span>
+            </div>
+            <div class="game__actions">
+              <button class="btn btn--primary" id="game-start" data-magnetic>Start run</button>
+            </div>
+          </div>
+
+          <div class="game__screen" id="screen-paused" hidden>
+            <p class="mono">Paused</p>
+            <h3>Run suspended</h3>
+            <div class="game__actions">
+              <button class="btn btn--primary" id="game-resume">Resume</button>
+              <button class="btn" id="game-restart-paused">Restart</button>
+            </div>
+          </div>
+
+          <div class="game__screen game__screen--won" id="screen-won" hidden>
+            <p class="mono">Override complete</p>
+            <h3>ACCESS GRANTED</h3>
+            <p>
+              You found the hidden layer. Good engineering is not only about making systems work — it’s
+              about understanding what happens beneath the surface.
+            </p>
+            <p class="mono" id="won-stats"></p>
+            <div class="game__actions">
+              <button class="btn btn--primary" id="won-projects">Explore my projects</button>
+              <button class="btn" id="won-again">Play again</button>
+              <button class="btn btn--ghost" data-close>Return to portfolio</button>
+            </div>
+          </div>
+
+          <div class="game__screen game__screen--lost" id="screen-lost" hidden>
+            <p class="mono">Trace detected</p>
+            <h3>CONNECTION SEVERED</h3>
+            <p id="lost-reason">A security sweep found you.</p>
+            <div class="game__actions">
+              <button class="btn btn--primary" id="lost-again">Try again</button>
+              <button class="btn btn--ghost" data-close>Leave</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="game__pad" aria-hidden="false">
+          <button class="k-up" data-dir="up" aria-label="Move up">↑</button>
+          <button class="k-left" data-dir="left" aria-label="Move left">←</button>
+          <button class="k-down" data-dir="down" aria-label="Move down">↓</button>
+          <button class="k-right" data-dir="right" aria-label="Move right">→</button>
+        </div>
+      </div>
+    </dialog>
+  </body>
 </html>

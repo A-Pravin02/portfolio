@@ -1,0 +1,1107 @@
+/* ═══════════════════════════════════════════════════════════
+   FEATURES — cursor, dialogs, interactive demos, terminal, game.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ═══ CURSOR ═══════════════════════════════════════════════
+   An additive indicator. The native cursor is never hidden, so
+   nothing breaks if this layer fails or is unsupported. */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 300;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--mid) var(--ease);
+}
+
+.has-pointer .cursor {
+  opacity: 1;
+}
+
+.cursor__ring {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid var(--line-3);
+  border-radius: 50%;
+  transition:
+    width var(--mid) var(--ease),
+    height var(--mid) var(--ease),
+    margin var(--mid) var(--ease),
+    border-color var(--mid) var(--ease),
+    background-color var(--mid) var(--ease);
+}
+
+.cursor__label {
+  position: absolute;
+  translate: -50% -50%;
+  font-family: var(--mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bg);
+  opacity: 0;
+  transition: opacity var(--fast) var(--ease);
+  white-space: nowrap;
+}
+
+/* Modes */
+.cursor[data-mode='interactive'] .cursor__ring {
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  border-color: var(--line-3);
+  background: rgba(245, 245, 247, 0.05);
+}
+
+.cursor[data-mode='project'] .cursor__ring,
+.cursor[data-mode='play'] .cursor__ring,
+.cursor[data-mode='terminal'] .cursor__ring {
+  width: 72px;
+  height: 72px;
+  margin: -36px 0 0 -36px;
+}
+
+.cursor[data-mode='project'] .cursor__ring {
+  background: var(--violet);
+  border-color: var(--violet);
+}
+
+.cursor[data-mode='play'] .cursor__ring {
+  background: var(--cyan);
+  border-color: var(--cyan);
+}
+
+.cursor[data-mode='terminal'] .cursor__ring {
+  background: var(--allow);
+  border-color: var(--allow);
+}
+
+.cursor[data-mode='project'] .cursor__label,
+.cursor[data-mode='play'] .cursor__label,
+.cursor[data-mode='terminal'] .cursor__label {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    display: none;
+  }
+}
+
+/* ═══ DIALOGS ══════════════════════════════════════════════ */
+dialog {
+  margin: auto;
+  padding: 0;
+  color: var(--ink);
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-lg);
+  max-width: min(980px, calc(100vw - 2rem));
+  max-height: min(88svh, 900px);
+  width: 100%;
+  overflow: hidden;
+}
+
+/* MANDATORY per the dialog guide: without both of these, scrolling
+   over the backdrop or inside the dialog scrolls the page behind it. */
+dialog:modal {
+  overscroll-behavior: contain;
+}
+
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: color-mix(in oklab, #04050a 82%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  dialog {
+    transition:
+      opacity var(--mid) var(--ease),
+      translate var(--mid) var(--ease),
+      display var(--mid) allow-discrete,
+      overlay var(--mid) allow-discrete;
+  }
+
+  dialog:not([open]) {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+
+  @starting-style {
+    dialog[open] {
+      opacity: 0;
+      translate: 0 1rem;
+    }
+  }
+}
+
+.dlg {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  max-height: inherit;
+}
+
+.dlg__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in oklab, var(--bg) 50%, transparent);
+}
+
+.dlg__bar h2 {
+  font-size: var(--t-base);
+  font-weight: 500;
+}
+
+.dlg__bar .mono {
+  color: var(--ink-3);
+}
+
+.dlg__close {
+  margin-left: auto;
+}
+
+.dlg__body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--s-6) var(--s-5);
+}
+
+@media (min-width: 720px) {
+  .dlg__body {
+    padding: var(--s-7);
+  }
+}
+
+/* ── Project detail content ───────────────────────────────── */
+.detail__hero {
+  padding-bottom: var(--s-5);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--s-6);
+}
+
+.detail__hero h3 {
+  font-size: var(--t-h2);
+  margin-top: var(--s-3);
+}
+
+.detail__hero .spread__tagline {
+  font-size: var(--t-h3);
+}
+
+.detail__block {
+  padding-block: var(--s-5);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: var(--s-3);
+}
+
+@media (min-width: 820px) {
+  .detail__block {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+}
+
+.detail__block h4 {
+  font-size: var(--t-sm);
+  font-family: var(--mono);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  align-self: start;
+}
+
+.detail__block p,
+.detail__block li {
+  color: var(--ink-2);
+  max-width: var(--measure);
+}
+
+.detail__list {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.detail__list li {
+  position: relative;
+  padding-left: var(--s-4);
+  font-size: var(--t-sm);
+}
+
+.detail__list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 6px;
+  height: 1px;
+  background: var(--line-3);
+}
+
+.detail__list--warn li::before {
+  background: var(--hold);
+}
+
+.detail__list--ok li::before {
+  background: var(--allow);
+}
+
+.detail__img {
+  margin-bottom: var(--s-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: clip;
+  background: var(--surface);
+}
+
+.detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  padding-top: var(--s-6);
+}
+
+/* ═══ AGENTBRIDGE PIPELINE ═════════════════════════════════ */
+.pipe {
+  display: grid;
+  gap: var(--s-5);
+  margin-top: var(--s-6);
+}
+
+@media (min-width: 1020px) {
+  .pipe {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: var(--s-7);
+    align-items: start;
+  }
+}
+
+.pipe__stages {
+  display: grid;
+  gap: 2px;
+}
+
+.pipe__stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  padding: var(--s-3) var(--s-4);
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in oklab, var(--surface) 40%, transparent);
+  color: var(--ink-2);
+  transition:
+    border-color var(--fast) var(--ease),
+    background-color var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.pipe__stage:hover {
+  border-color: var(--line-3);
+  color: var(--ink);
+}
+
+.pipe__stage[aria-pressed='true'] {
+  border-color: var(--violet);
+  background: color-mix(in oklab, var(--violet) 10%, transparent);
+  color: var(--ink);
+}
+
+.pipe__num {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+}
+
+.pipe__name {
+  font-family: var(--display);
+  font-size: var(--t-sm);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.pipe__mono {
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  color: var(--ink-3);
+  letter-spacing: 0.02em;
+}
+
+/* Connector between stages */
+.pipe__stage:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(1.125rem + var(--s-4));
+  bottom: -2px;
+  width: 1px;
+  height: 2px;
+  background: var(--line-2);
+}
+
+/* Run states */
+.pipe__stage[data-state='pass'] {
+  border-color: color-mix(in oklab, var(--allow) 45%, var(--line));
+}
+
+.pipe__stage[data-state='pass'] .pipe__num {
+  color: var(--allow);
+}
+
+.pipe__stage[data-state='hold'] {
+  border-color: color-mix(in oklab, var(--hold) 55%, var(--line));
+}
+
+.pipe__stage[data-state='hold'] .pipe__num {
+  color: var(--hold);
+}
+
+.pipe__stage[data-state='block'] {
+  border-color: color-mix(in oklab, var(--block) 55%, var(--line));
+}
+
+.pipe__stage[data-state='block'] .pipe__num {
+  color: var(--block);
+}
+
+.pipe__stage[data-state='skip'] {
+  opacity: 0.4;
+}
+
+.pipe__stage[data-state='active'] {
+  border-color: var(--cyan);
+}
+
+/* Right-hand inspector */
+.pipe__side {
+  display: grid;
+  gap: var(--s-4);
+  position: sticky;
+  top: var(--s-7);
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in oklab, var(--surface) 50%, transparent);
+}
+
+.panel__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.panel__body {
+  padding: var(--s-4);
+  display: grid;
+  gap: var(--s-4);
+}
+
+.panel__body h4 {
+  font-family: var(--display);
+  font-size: var(--t-base);
+  font-weight: 500;
+}
+
+.kv {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+}
+
+.kv > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.kv dt {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.kv dd {
+  margin: 0;
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+
+/* Scenario picker */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.chip {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+  transition:
+    border-color var(--fast) var(--ease),
+    color var(--fast) var(--ease),
+    background-color var(--fast) var(--ease);
+}
+
+.chip:hover {
+  border-color: var(--line-3);
+  color: var(--ink);
+}
+
+.chip[aria-pressed='true'] {
+  border-color: var(--cyan);
+  color: var(--bg);
+  background: var(--cyan);
+}
+
+.verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  border: 1px solid currentColor;
+}
+
+.verdict[data-v='ALLOW'] {
+  color: var(--allow);
+}
+
+.verdict[data-v='REQUIRE_APPROVAL'] {
+  color: var(--hold);
+}
+
+.verdict[data-v='BLOCK'] {
+  color: var(--block);
+}
+
+.verdict[data-v='PROVED'] {
+  color: var(--allow);
+}
+
+.verdict[data-v='REFUTED'] {
+  color: var(--block);
+}
+
+.verdict[data-v='UNKNOWN'] {
+  color: var(--hold);
+}
+
+.sim-note {
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+  font-family: var(--mono);
+  letter-spacing: 0.03em;
+  line-height: 1.6;
+  padding-top: var(--s-3);
+  border-top: 1px dashed var(--line);
+  margin-top: var(--s-4);
+  text-transform: none;
+}
+
+/* ═══ PRAXIS DIAGRAM ═══════════════════════════════════════ */
+.graph {
+  display: grid;
+  gap: var(--s-5);
+  margin-top: var(--s-6);
+}
+
+@media (min-width: 1020px) {
+  .graph {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: var(--s-7);
+    align-items: start;
+  }
+}
+
+.graph__svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.gnode {
+  cursor: pointer;
+}
+
+.gnode rect {
+  fill: color-mix(in oklab, var(--surface) 70%, transparent);
+  stroke: var(--line-2);
+  stroke-width: 1;
+  transition:
+    stroke var(--fast) var(--ease),
+    fill var(--fast) var(--ease);
+}
+
+.gnode text {
+  font-family: var(--display);
+  font-size: 13px;
+  fill: var(--ink-2);
+  transition: fill var(--fast) var(--ease);
+}
+
+.gnode .gkind {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  fill: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.gnode:hover rect {
+  stroke: var(--line-3);
+}
+
+.gnode:hover text {
+  fill: var(--ink);
+}
+
+.gnode[aria-pressed='true'] rect {
+  stroke: var(--violet);
+  fill: color-mix(in oklab, var(--violet) 14%, transparent);
+}
+
+.gnode[aria-pressed='true'] text {
+  fill: var(--ink);
+}
+
+.gnode[data-kind='symbolic'][aria-pressed='true'] rect,
+.gnode[data-kind='gate'][aria-pressed='true'] rect {
+  stroke: var(--cyan);
+  fill: color-mix(in oklab, var(--cyan) 12%, transparent);
+}
+
+.gedge {
+  stroke: var(--line-2);
+  stroke-width: 1;
+  fill: none;
+}
+
+.gedge.is-live {
+  stroke: var(--cyan);
+}
+
+.gnode.is-live rect {
+  stroke: var(--cyan);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .gedge.is-live {
+    stroke-dasharray: 5 7;
+    animation: dash 1.1s linear infinite;
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+/* Evaluation table */
+.evaltable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-sm);
+  margin-top: var(--s-4);
+}
+
+.evaltable caption {
+  text-align: left;
+  color: var(--ink-3);
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding-bottom: var(--s-3);
+}
+
+.evaltable th,
+.evaltable td {
+  padding: var(--s-3) var(--s-3);
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.evaltable th:first-child,
+.evaltable td:first-child {
+  text-align: left;
+}
+
+.evaltable thead th {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 500;
+  border-bottom-color: var(--line-2);
+}
+
+.evaltable tbody tr {
+  color: var(--ink-2);
+}
+
+.evaltable tbody tr.is-ours {
+  color: var(--ink);
+}
+
+.evaltable tbody tr.is-ours td:first-child {
+  position: relative;
+  padding-left: var(--s-4);
+}
+
+.evaltable tbody tr.is-ours td:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  translate: 0 -50%;
+  width: 2px;
+  height: 1.1em;
+  background: var(--violet);
+}
+
+/* Bar inside the hallucination column */
+.bar {
+  display: block;
+  height: 3px;
+  margin-top: 5px;
+  background: var(--line-2);
+  border-radius: 2px;
+}
+
+.bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--block);
+}
+
+tr.is-ours .bar > i {
+  background: var(--allow);
+}
+
+/* ═══ TERMINAL ═════════════════════════════════════════════ */
+#terminal {
+  max-width: min(760px, calc(100vw - 2rem));
+  background: #05060a;
+  border-color: color-mix(in oklab, var(--allow) 26%, var(--line-2));
+}
+
+.term {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: min(68svh, 560px);
+}
+
+.term__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.term__dots {
+  display: flex;
+  gap: 6px;
+}
+
+.term__dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--line-2);
+}
+
+.term__dots i:first-child {
+  background: color-mix(in oklab, var(--block) 70%, transparent);
+}
+
+.term__title {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.term__out {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--s-4);
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  line-height: 1.75;
+  color: #b9c0c9;
+  scrollbar-width: thin;
+}
+
+.term__out p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.term__echo {
+  color: var(--allow);
+  margin-top: var(--s-3);
+}
+
+.term__err {
+  color: var(--block);
+}
+
+.term__dim {
+  color: var(--ink-3);
+}
+
+.term__key {
+  color: var(--cyan);
+}
+
+.term__hl {
+  color: var(--violet);
+}
+
+.term__out a {
+  color: var(--cyan);
+  border-bottom: 1px solid currentColor;
+}
+
+.term__form {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border-top: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.term__prompt {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--allow);
+  flex: 0 0 auto;
+}
+
+.term__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--ink);
+  caret-color: var(--allow);
+}
+
+.term__input::placeholder {
+  color: var(--ink-3);
+}
+
+/* Mobile quick commands */
+.term__quick {
+  display: flex;
+  gap: var(--s-2);
+  padding: 0 var(--s-4) var(--s-3);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+@media (min-width: 720px) {
+  .term__quick {
+    display: none;
+  }
+}
+
+/* Scanline, kept faint enough to read through */
+.term::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    rgba(255, 255, 255, 0.015) 2px 3px
+  );
+}
+
+/* ═══ COMMAND PALETTE ══════════════════════════════════════ */
+#palette {
+  max-width: min(560px, calc(100vw - 2rem));
+  align-self: start;
+  margin-top: 12svh;
+}
+
+.pal__field {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.pal__field input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: var(--t-base);
+}
+
+.pal__field input::placeholder {
+  color: var(--ink-3);
+}
+
+.pal__list {
+  max-height: 46svh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--s-2);
+}
+
+.pal__item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  padding: var(--s-3);
+  border-radius: var(--radius);
+  text-align: left;
+  color: var(--ink-2);
+}
+
+.pal__item[data-active='true'] {
+  background: rgba(245, 245, 247, 0.055);
+  color: var(--ink);
+}
+
+.pal__item .pal__kind {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pal__empty {
+  padding: var(--s-5);
+  color: var(--ink-3);
+  font-size: var(--t-sm);
+  text-align: center;
+}
+
+.pal__foot {
+  display: flex;
+  gap: var(--s-4);
+  padding: var(--s-3) var(--s-4);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+}
+
+/* ═══ GAME ═════════════════════════════════════════════════ */
+#game {
+  max-width: min(720px, calc(100vw - 1.5rem));
+  background: #06070b;
+}
+
+.game {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+
+.game__hud {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.game__hud b {
+  color: var(--ink);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.game__hud .spacer {
+  margin-left: auto;
+}
+
+.game__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: var(--s-4);
+}
+
+.game__canvas {
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #070810;
+  touch-action: none;
+}
+
+/* Overlay screens: ready / paused / won / lost */
+.game__screen {
+  position: absolute;
+  inset: var(--s-4);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  text-align: center;
+  background: color-mix(in oklab, #05060a 88%, transparent);
+  backdrop-filter: blur(3px);
+  border-radius: var(--radius);
+}
+
+.game__screen[hidden] {
+  display: none;
+}
+
+.game__screen h3 {
+  font-size: var(--t-h3);
+}
+
+.game__screen p {
+  max-width: 44ch;
+  color: var(--ink-2);
+  font-size: var(--t-sm);
+}
+
+.game__screen .mono {
+  color: var(--cyan);
+}
+
+.game__screen--won h3 {
+  color: var(--allow);
+  letter-spacing: 0.04em;
+}
+
+.game__screen--lost h3 {
+  color: var(--block);
+}
+
+.game__keys {
+  display: grid;
+  gap: var(--s-2);
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+}
+
+.game__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  justify-content: center;
+}
+
+/* Touch pad */
+.game__pad {
+  display: none;
+  grid-template-columns: repeat(3, 56px);
+  grid-template-rows: repeat(2, 56px);
+  gap: var(--s-2);
+  justify-content: center;
+  padding: 0 var(--s-4) var(--s-4);
+}
+
+@media (pointer: coarse) {
+  .game__pad {
+    display: grid;
+  }
+}
+
+.game__pad button {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: color-mix(in oklab, var(--surface) 70%, transparent);
+  color: var(--ink-2);
+  font-size: 1.1rem;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.game__pad button:active {
+  background: color-mix(in oklab, var(--cyan) 22%, transparent);
+  color: var(--ink);
+}
+
+.game__pad .k-up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.game__pad .k-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.game__pad .k-down {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.game__pad .k-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+kbd {
+  display: inline-block;
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--ink-2);
+  background: rgba(245, 245, 247, 0.03);
+}
