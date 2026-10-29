@@ -11,13 +11,15 @@
   overflow: clip;
 }
 
+/* One very soft wash, nothing that reads as a glowing object. */
 .ambient__wash {
   position: absolute;
   inset: -20%;
-  background:
-    radial-gradient(60% 50% at 18% 8%, color-mix(in oklab, var(--violet) 16%, transparent), transparent 70%),
-    radial-gradient(45% 40% at 88% 72%, color-mix(in oklab, var(--cyan) 9%, transparent), transparent 72%),
-    radial-gradient(90% 70% at 50% 110%, var(--bg-2), transparent 70%);
+  background: radial-gradient(
+    70% 55% at 22% 0%,
+    color-mix(in oklab, var(--violet) 7%, transparent),
+    transparent 68%
+  );
 }
 
 /* Fine grain. An SVG feTurbulence tile, kept very low contrast. */
@@ -30,39 +32,6 @@
   background-size: 180px 180px;
 }
 
-.ambient__grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(to right, var(--line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
-  background-size: 96px 96px;
-  mask-image: radial-gradient(80% 60% at 50% 0%, #000 0%, transparent 75%);
-  opacity: 0.5;
-}
-
-/* Pointer light. Position is written to custom properties from JS. */
-.ambient__light {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 44rem;
-  height: 44rem;
-  translate: calc(var(--px, 50vw) - 22rem) calc(var(--py, 40vh) - 22rem);
-  background: radial-gradient(circle, color-mix(in oklab, var(--violet) 13%, transparent), transparent 62%);
-  opacity: 0;
-  transition: opacity var(--slow) var(--ease);
-}
-
-.has-pointer .ambient__light {
-  opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ambient__light {
-    display: none;
-  }
-}
 
 /* ── Top bar ──────────────────────────────────────────────────
    One nav, always visible, with words on every control. Replaces an
@@ -245,63 +214,94 @@
   right: var(--gutter);
 }
 
-/* ═══ HERO ═════════════════════════════════════════════════ */
+/* ═══ HERO ═════════════════════════════════════════════════
+   The portrait has to be visible without scrolling, so the hero is
+   sized by its content rather than forced to fill the viewport. */
 .hero {
   position: relative;
-  min-height: 100svh;
-  display: grid;
-  align-content: center;
-  padding: calc(var(--s-9) + 2rem) var(--gutter) var(--s-8);
-  overflow: clip;
+  padding: calc(var(--s-8) + 2.5rem) var(--gutter) var(--s-8);
 }
 
 .hero__grid {
   display: grid;
-  gap: var(--s-6);
+  gap: var(--s-5);
   grid-template-columns: minmax(0, 1fr);
-  align-items: end;
+  align-items: start;
 }
 
-@media (min-width: 1080px) {
+@media (min-width: 980px) {
   .hero__grid {
-    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-    gap: var(--s-8);
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+    grid-template-areas:
+      'ident portrait'
+      'copy  portrait';
+    grid-template-rows: auto 1fr;
+    column-gap: var(--s-8);
+    row-gap: var(--s-5);
+  }
+
+  .hero__ident {
+    grid-area: ident;
+  }
+  .hero__portrait {
+    grid-area: portrait;
+  }
+  .hero__copy {
+    grid-area: copy;
   }
 }
 
-.hero__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s-3);
-  margin-bottom: var(--s-5);
+.hero__label {
   color: var(--ink-3);
 }
 
-.hero__eyebrow::before {
-  content: '';
-  width: 28px;
-  height: 1px;
-  background: var(--line-3);
+.hero__name {
+  margin-top: var(--s-3);
+  font-family: var(--display);
+  font-size: var(--t-h3);
+  color: var(--ink);
+  letter-spacing: -0.01em;
 }
 
+/* ── Portrait ──────────────────────────────────────────────
+   A plain frame. No halo, no ring, no glow. */
+.hero__portrait {
+  margin: 0;
+  max-width: 420px;
+  width: 100%;
+}
+
+@media (min-width: 980px) {
+  .hero__portrait {
+    max-width: none;
+    justify-self: end;
+  }
+}
+
+.hero__portrait img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: center 18%;
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  background: var(--surface);
+}
+
+.hero__portrait figcaption {
+  margin-top: var(--s-3);
+  color: var(--ink-3);
+}
+
+/* ── Copy ──────────────────────────────────────────────────── */
 .hero h1 {
   font-size: var(--t-h1);
-  font-weight: 400;
-  letter-spacing: -0.045em;
-  text-wrap: pretty;
-}
-
-.hero h1 .line {
-  display: block;
-}
-
-.hero h1 .line:last-child {
-  color: var(--ink-2);
+  max-width: 19ch;
 }
 
 .hero__intro {
-  margin-top: var(--s-6);
-  max-width: 52ch;
+  margin-top: var(--s-5);
+  max-width: 54ch;
 }
 
 .hero__actions {
@@ -311,119 +311,13 @@
   margin-top: var(--s-6);
 }
 
-/* Right column: the status panel */
-.hero__panel {
-  display: grid;
-  gap: var(--s-4);
-  padding: var(--s-5);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  background: color-mix(in oklab, var(--surface) 55%, transparent);
-}
-
-.hero__panel dl {
-  display: grid;
-  gap: var(--s-4);
-  margin: 0;
-}
-
-.hero__panel dt {
-  margin-bottom: 0.3rem;
-}
-
-.hero__panel dd {
-  margin: 0;
+.hero__focus {
+  margin-top: var(--s-5);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--line);
   font-size: var(--t-sm);
-  color: var(--ink);
-  line-height: 1.5;
-}
-
-.status-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 0.5rem;
-  border-radius: 50%;
-  background: var(--cyan);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--cyan) 18%, transparent);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .status-dot {
-    animation: pulse 2.8s var(--ease) infinite;
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--cyan) 18%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 0 6px color-mix(in oklab, var(--cyan) 4%, transparent);
-  }
-}
-
-/* Decorative geometry behind the hero */
-.hero__figure {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.hero__figure svg {
-  position: absolute;
-  right: -6%;
-  top: 50%;
-  translate: 0 -50%;
-  width: min(72vw, 820px);
-  height: auto;
-  opacity: 0.55;
-}
-
-/* Parallax layers: transform is driven from pointer position. */
-.plx {
-  will-change: transform;
-}
-
-.hero__scroll {
-  position: absolute;
-  bottom: var(--s-5);
-  left: var(--gutter);
-  display: flex;
-  align-items: center;
-  gap: var(--s-3);
-  color: var(--ink-3);
-}
-
-.hero__scroll i {
-  display: block;
-  width: 1px;
-  height: 34px;
-  background: linear-gradient(to bottom, var(--line-3), transparent);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .hero__scroll i {
-    animation: drip 2.4s var(--ease) infinite;
-    transform-origin: top;
-  }
-}
-
-@keyframes drip {
-  0% {
-    scale: 1 0.2;
-    opacity: 0;
-  }
-  40% {
-    scale: 1 1;
-    opacity: 1;
-  }
-  100% {
-    scale: 1 1;
-    opacity: 0;
-  }
+  color: var(--ink-2);
+  max-width: 48ch;
 }
 
 /* ═══ ABOUT ════════════════════════════════════════════════ */
@@ -440,32 +334,14 @@
   }
 }
 
-.about__portrait {
-  position: relative;
-  align-self: start;
-  max-width: 320px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  overflow: clip;
-  background: var(--surface);
-}
-
-.about__portrait img {
-  width: 100%;
-  filter: grayscale(0.35) contrast(1.05);
-  transition: filter var(--slow) var(--ease);
-}
-
-.about__portrait:hover img {
-  filter: grayscale(0) contrast(1);
-}
-
 .about__meta {
   display: grid;
   gap: var(--s-2);
-  padding: var(--s-4);
-  border-top: 1px solid var(--line);
-  background: color-mix(in oklab, var(--bg) 60%, transparent);
+  align-self: start;
+  padding: var(--s-5);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface);
 }
 
 .about__meta strong {
@@ -548,15 +424,23 @@
   letter-spacing: -0.04em;
 }
 
+/* The question a project set out to answer, not a claim about results. */
+.spread__question {
+  margin-top: var(--s-3);
+  font-family: var(--display);
+  font-size: var(--t-h3);
+  color: var(--ink-2);
+  line-height: 1.3;
+  max-width: 30ch;
+}
+
 .spread__tagline {
   margin-top: var(--s-3);
   font-family: var(--display);
   font-size: var(--t-h3);
-  font-weight: 400;
   color: var(--violet);
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-  max-width: 28ch;
+  line-height: 1.3;
+  max-width: 30ch;
 }
 
 .spread__meta {
@@ -655,7 +539,7 @@
 }
 
 .timeline__org {
-  color: var(--cyan-dim);
+  color: var(--violet-dim);
   font-size: var(--t-sm);
   margin-top: 0.15rem;
 }
@@ -682,8 +566,8 @@
 }
 
 .timeline__cred:hover {
-  color: var(--cyan);
-  border-color: var(--cyan);
+  color: var(--violet);
+  border-color: var(--violet);
 }
 
 /* ═══ SKILLS ═══════════════════════════════════════════════ */
@@ -771,7 +655,7 @@
 }
 
 a.skill:hover .skill__ev {
-  color: var(--cyan);
+  color: var(--violet);
 }
 
 /* ═══ CONTACT ══════════════════════════════════════════════ */
@@ -827,7 +711,7 @@ a.skill:hover .skill__ev {
 }
 
 .contact__row:hover .act {
-  color: var(--cyan);
+  color: var(--violet);
 }
 
 /* ═══ FOOTER ═══════════════════════════════════════════════ */
@@ -907,4 +791,74 @@ a.skill:hover .skill__ev {
 .toast.is-on {
   opacity: 1;
   translate: -50% 0;
+}
+
+/* ═══ PLAYGROUND ═══════════════════════════════════════════
+   The game gets a section of its own, so nobody has to go looking
+   for it. The board shown here is a still frame; Play now opens
+   the real thing. */
+.playground {
+  display: grid;
+  gap: var(--s-6);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .playground {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: var(--s-8);
+  }
+}
+
+.playground__facts {
+  display: grid;
+  gap: 0;
+  margin: var(--s-6) 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.playground__facts > div {
+  display: grid;
+  gap: var(--s-1) var(--s-5);
+  padding-block: var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+
+@media (min-width: 640px) {
+  .playground__facts > div {
+    grid-template-columns: 7rem minmax(0, 1fr);
+    align-items: baseline;
+  }
+}
+
+.playground__facts dt {
+  color: var(--ink-3);
+}
+
+.playground__facts dd {
+  margin: 0;
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+}
+
+.playground__board {
+  margin: 0;
+  justify-self: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.playground__board canvas {
+  width: 100%;
+  display: block;
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  background: #08080a;
+}
+
+.playground__board figcaption {
+  margin-top: var(--s-3);
+  color: var(--ink-3);
+  text-align: center;
 }

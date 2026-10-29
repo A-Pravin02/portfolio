@@ -1,95 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
-   FEATURES — cursor, dialogs, interactive demos, terminal, game.
+   FEATURES — dialogs, interactive demos, terminal, game.
    ═══════════════════════════════════════════════════════════ */
-
-/* ═══ CURSOR ═══════════════════════════════════════════════
-   An additive indicator. The native cursor is never hidden, so
-   nothing breaks if this layer fails or is unsupported. */
-.cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 300;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--mid) var(--ease);
-}
-
-.has-pointer .cursor {
-  opacity: 1;
-}
-
-.cursor__ring {
-  position: absolute;
-  width: 34px;
-  height: 34px;
-  margin: -17px 0 0 -17px;
-  border: 1px solid var(--line-3);
-  border-radius: 50%;
-  transition:
-    width var(--mid) var(--ease),
-    height var(--mid) var(--ease),
-    margin var(--mid) var(--ease),
-    border-color var(--mid) var(--ease),
-    background-color var(--mid) var(--ease);
-}
-
-.cursor__label {
-  position: absolute;
-  translate: -50% -50%;
-  font-family: var(--mono);
-  font-size: 0.5625rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--bg);
-  opacity: 0;
-  transition: opacity var(--fast) var(--ease);
-  white-space: nowrap;
-}
-
-/* Modes */
-.cursor[data-mode='interactive'] .cursor__ring {
-  width: 48px;
-  height: 48px;
-  margin: -24px 0 0 -24px;
-  border-color: var(--line-3);
-  background: rgba(245, 245, 247, 0.05);
-}
-
-.cursor[data-mode='project'] .cursor__ring,
-.cursor[data-mode='play'] .cursor__ring,
-.cursor[data-mode='terminal'] .cursor__ring {
-  width: 72px;
-  height: 72px;
-  margin: -36px 0 0 -36px;
-}
-
-.cursor[data-mode='project'] .cursor__ring {
-  background: var(--violet);
-  border-color: var(--violet);
-}
-
-.cursor[data-mode='play'] .cursor__ring {
-  background: var(--cyan);
-  border-color: var(--cyan);
-}
-
-.cursor[data-mode='terminal'] .cursor__ring {
-  background: var(--allow);
-  border-color: var(--allow);
-}
-
-.cursor[data-mode='project'] .cursor__label,
-.cursor[data-mode='play'] .cursor__label,
-.cursor[data-mode='terminal'] .cursor__label {
-  opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cursor {
-    display: none;
-  }
-}
 
 /* ═══ DIALOGS ══════════════════════════════════════════════ */
 dialog {
@@ -381,7 +292,7 @@ dialog::backdrop {
 }
 
 .pipe__stage[data-state='active'] {
-  border-color: var(--cyan);
+  border-color: var(--violet);
 }
 
 /* Right-hand inspector */
@@ -471,9 +382,9 @@ dialog::backdrop {
 }
 
 .chip[aria-pressed='true'] {
-  border-color: var(--cyan);
+  border-color: var(--violet);
   color: var(--bg);
-  background: var(--cyan);
+  background: var(--violet);
 }
 
 .verdict {
@@ -592,8 +503,8 @@ dialog::backdrop {
 
 .gnode[data-kind='symbolic'][aria-pressed='true'] rect,
 .gnode[data-kind='gate'][aria-pressed='true'] rect {
-  stroke: var(--cyan);
-  fill: color-mix(in oklab, var(--cyan) 12%, transparent);
+  stroke: var(--violet);
+  fill: color-mix(in oklab, var(--violet) 12%, transparent);
 }
 
 .gedge {
@@ -603,11 +514,11 @@ dialog::backdrop {
 }
 
 .gedge.is-live {
-  stroke: var(--cyan);
+  stroke: var(--violet);
 }
 
 .gnode.is-live rect {
-  stroke: var(--cyan);
+  stroke: var(--violet);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -783,7 +694,7 @@ tr.is-ours .bar > i {
 }
 
 .term__key {
-  color: var(--cyan);
+  color: var(--violet);
 }
 
 .term__hl {
@@ -791,7 +702,7 @@ tr.is-ours .bar > i {
 }
 
 .term__out a {
-  color: var(--cyan);
+  color: var(--violet);
   border-bottom: 1px solid currentColor;
 }
 
@@ -1018,7 +929,7 @@ tr.is-ours .bar > i {
 }
 
 .game__screen .mono {
-  color: var(--cyan);
+  color: var(--violet);
 }
 
 .game__screen--won h3 {
@@ -1076,7 +987,7 @@ tr.is-ours .bar > i {
 }
 
 .game__pad button:active {
-  background: color-mix(in oklab, var(--cyan) 22%, transparent);
+  background: color-mix(in oklab, var(--violet) 22%, transparent);
   color: var(--ink);
 }
 

@@ -11,6 +11,7 @@ export const projects = [
   /* ══ AGENTBRIDGE ══════════════════════════════════════════ */
   {
     id: 'agentbridge',
+    question: 'Can an AI agent be trusted with a payment?',
     title: 'AgentBridge',
     category: 'AI agents · Payment authorization · Backend security',
     year: '2026',
@@ -230,6 +231,7 @@ export const projects = [
   /* ══ PRAXIS ═══════════════════════════════════════════════ */
   {
     id: 'praxis',
+    question: 'What if a language model had to verify its claims?',
     title: 'PRAXIS',
     category: 'Neuro-symbolic AI · LLM reasoning · Research',
     year: '2026',
@@ -400,6 +402,7 @@ export const projects = [
   /* ══ ARCHIVE ══════════════════════════════════════════════ */
   {
     id: 'footballgpt',
+    question: 'What does attention actually compute?',
     title: 'FootballGPT',
     category: 'Transformer language model from scratch',
     year: '2026',
@@ -429,6 +432,7 @@ export const projects = [
   },
   {
     id: 'face3d',
+    question: 'How can a 2D image become a fitted 3D model?',
     title: 'Deep3DFaceRecon',
     category: 'Computer vision · 3D reconstruction',
     year: '2026',
@@ -466,6 +470,7 @@ export const projects = [
   },
   {
     id: 'agrow',
+    question: 'Can a buyer verify where a crop came from?',
     title: 'Agrow',
     category: 'Full-stack platform · Supply chain',
     year: '2025',

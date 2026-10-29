@@ -89,7 +89,7 @@ export function mountReasoning(host, project) {
             </div>
             <dl class="kv" data-case-detail></dl>
             <div class="game__actions" style="justify-content: flex-start">
-              <button class="btn btn--primary" type="button" data-trace data-magnetic>Trace the query</button>
+              <button class="btn btn--primary" type="button" data-trace>Trace the query</button>
             </div>
           </div>
         </div>

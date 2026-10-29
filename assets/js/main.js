@@ -7,10 +7,10 @@ import { $, $$ } from './utils.js';
 import { profile } from './data/profile.js';
 import { renderHero, renderAbout, renderAchievements, renderSkills, renderContact } from './sections.js';
 import { renderProjects, openProject, openFromHash } from './projects-view.js';
-import { initPointer, initMagnetic, initReveals, initChrome, initClock } from './interactions.js';
+import { initReveals, initChrome } from './interactions.js';
 import { initTerminal } from './terminal.js';
 import { initPalette } from './palette.js';
-import { initGame } from './game/view.js';
+import { initGame, mountPreview } from './game/view.js';
 
 // Marks that scripting is available, so the reveal styles can apply.
 document.documentElement.classList.add('js');
@@ -26,14 +26,12 @@ function boot() {
 
   /* ── Interaction layer ────────────────────────────────── */
   initChrome();
-  initClock(profile.timeZone);
-  initPointer();
-  initMagnetic();
   initReveals();
 
   /* ── Overlays ─────────────────────────────────────────── */
   const terminal = initTerminal();
   const game = initGame();
+  mountPreview($('#game-preview'));
   const palette = initPalette({
     openTerminal: terminal.open,
     openGame: game.open,

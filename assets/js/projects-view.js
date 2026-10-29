@@ -38,7 +38,7 @@ function spread(project) {
         <div>
           <p class="mono">${project.category}</p>
           <h3 class="spread__title">${project.title}</h3>
-          <p class="spread__tagline">${project.tagline}</p>
+          <p class="spread__question">${project.question || project.tagline}</p>
         </div>
 
         <div>
@@ -48,7 +48,7 @@ function spread(project) {
             ${project.tech.map((t) => h`<span class="tag">${t}</span>`)}
           </div>
           <div class="spread__actions">
-            <button class="btn btn--accent" data-project="${project.id}" data-cursor="project" data-magnetic>
+            <button class="btn btn--accent" data-project="${project.id}">
               Read the write-up
             </button>
             ${sourceLink(project)}
@@ -97,14 +97,14 @@ function visual(project) {
 
 function sourceLink(project) {
   if (!project.links?.source) return '';
-  return h`<a class="btn" href="${project.links.source}" target="_blank" rel="noopener noreferrer" data-magnetic>
+  return h`<a class="btn" href="${project.links.source}" target="_blank" rel="noopener noreferrer">
     Source ${ARROW}
   </a>`;
 }
 
 function demoLink(project) {
   if (!project.links?.demo) return '';
-  return h`<a class="btn" href="${project.links.demo}" target="_blank" rel="noopener noreferrer" data-magnetic>
+  return h`<a class="btn" href="${project.links.demo}" target="_blank" rel="noopener noreferrer">
     Live demo ${ARROW}
   </a>`;
 }

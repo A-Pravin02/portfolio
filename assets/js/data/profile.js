@@ -11,16 +11,15 @@ export const profile = {
   timeZone: 'Asia/Kolkata',
 
   // Hero copy
-  eyebrow: 'Independently curious. Engineering-driven.',
-  headline: ['Building intelligent systems.', 'Exploring what comes next.'],
+  label: 'Engineering / AI systems / Research',
+  headline: 'I like understanding what happens beneath the surface.',
   intro:
-    "I'm Pravin Anbalagan — a Computer Science and Business Systems student at VIT Vellore working on " +
-    'intelligent systems, AI research, software engineering, and quantitative thinking.',
+    'I’m Pravin Anbalagan, a Computer Science and Business Systems student at VIT Vellore. I build ' +
+    'software, explore intelligent systems, and investigate what happens when models reason, systems ' +
+    'fail, or autonomous agents take action.',
 
-  // What I'm on right now. Shown as the hero status line.
-  // Set `availability` only when it is actually true; leave null to hide it.
-  currentFocus: 'Currently building AgentBridge — an authorization layer for AI agents',
-  availability: null, // e.g. { label: 'Open to AI/ML internships', tone: 'open' }
+  // One line on what I'm actually doing now. Leave null to hide it.
+  currentFocus: 'Currently building AgentBridge — an authorization layer for AI agents.',
 
   about: [
     'I study Computer Science and Business Systems at VIT Vellore. Most of what I build starts with ' +
@@ -68,5 +67,12 @@ export const profile = {
       'email is the fastest way to reach me.',
   },
 
-  photo: { src: 'assets/img/pravin.webp', alt: 'Portrait of Pravin Anbalagan' },
+  /* Portrait. To swap it, drop a square image in assets/img/ and point
+     `src` at it — then regenerate the two sizes referenced by the hero's
+     srcset in index.html, or replace that srcset with this one path. */
+  photo: {
+    src: 'assets/img/pravin-560.webp',
+    alt: 'Pravin Anbalagan',
+    caption: 'Pravin Anbalagan · VIT Vellore',
+  },
 };

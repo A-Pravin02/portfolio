@@ -9,13 +9,14 @@
 import { $, $$, reducedMotion, goToSection } from '../utils.js';
 import { createGame, STATES } from './engine.js';
 
-const WALL = '#3f31a8';
-const WALL_EDGE = '#8665ff';
-const PELLET = '#f0d7a8';
-const PAC = '#ffd34d';
-const FRIGHT = '#3b63ff';
-const FRIGHT_FLASH = '#f5f5f7';
-const DOOR = '#ffa8dc';
+/* Muted to sit inside the site's palette rather than shout over it. */
+const WALL = '#201c33';
+const WALL_EDGE = '#6b5cab';
+const PELLET = '#aaa7a0';
+const PAC = '#e0c070';
+const FRIGHT = '#3c3a6e';
+const FRIGHT_FLASH = '#f0eee8';
+const DOOR = '#8a7fb5';
 
 const DIR_VECTORS = {
   up: { x: 0, y: -1 },
@@ -218,155 +219,7 @@ export function initGame() {
   /* ── Draw ─────────────────────────────────────────────── */
 
   function draw() {
-    const s = game.snapshot();
-    const w = s.cols * cell;
-    const h = s.rows * cell;
-
-    ctx.clearRect(0, 0, w, h);
-
-    /* Maze. Each wall tile is drawn as a rounded block, with edges only
-       where it meets open space, so corridors read as channels. */
-    for (let y = 0; y < s.rows; y += 1) {
-      for (let x = 0; x < s.cols; x += 1) {
-        if (!s.walls[y][x]) continue;
-        const px = x * cell;
-        const py = y * cell;
-        ctx.fillStyle = WALL;
-        ctx.fillRect(px, py, cell, cell);
-
-        ctx.strokeStyle = WALL_EDGE;
-        ctx.lineWidth = Math.max(1, cell * 0.08);
-        ctx.beginPath();
-        if (y === 0 || !s.walls[y - 1][x]) {
-          ctx.moveTo(px, py);
-          ctx.lineTo(px + cell, py);
-        }
-        if (y === s.rows - 1 || !s.walls[y + 1][x]) {
-          ctx.moveTo(px, py + cell);
-          ctx.lineTo(px + cell, py + cell);
-        }
-        if (x === 0 || !s.walls[y][x - 1]) {
-          ctx.moveTo(px, py);
-          ctx.lineTo(px, py + cell);
-        }
-        if (x === s.cols - 1 || !s.walls[y][x + 1]) {
-          ctx.moveTo(px + cell, py);
-          ctx.lineTo(px + cell, py + cell);
-        }
-        ctx.stroke();
-      }
-    }
-
-    /* Ghost house door */
-    for (let y = 0; y < s.rows; y += 1) {
-      for (let x = 0; x < s.cols; x += 1) {
-        if (!s.doors[y][x]) continue;
-        ctx.fillStyle = DOOR;
-        ctx.fillRect(x * cell, y * cell + cell * 0.42, cell, cell * 0.16);
-      }
-    }
-
-    /* Pellets. Power pellets pulse, unless reduced motion is requested. */
-    const pulse = reducedMotion() ? 1 : 0.72 + Math.sin(s.elapsed * 7) * 0.28;
-    for (const pellet of s.pellets) {
-      if (pellet.taken) continue;
-      const px = pellet.x * cell + cell / 2;
-      const py = pellet.y * cell + cell / 2;
-      ctx.fillStyle = PELLET;
-      ctx.beginPath();
-      ctx.arc(px, py, pellet.power ? cell * 0.3 * pulse : cell * 0.1, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    /* Player */
-    if (!s.respawning || Math.floor(s.elapsed * 10) % 2 === 0) drawPac(s);
-
-    /* Ghosts */
-    for (const ghost of s.ghosts) drawGhost(s, ghost);
-
-    /* Floating score from the last ghost eaten */
-    if (s.eatenAt) {
-      ctx.fillStyle = '#55ddf5';
-      ctx.font = `600 ${Math.round(cell * 0.72)}px 'JetBrains Mono', monospace`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.globalAlpha = Math.max(0, s.eatenAt.life);
-      ctx.fillText(String(s.eatenAt.points), s.eatenAt.x * cell, s.eatenAt.y * cell);
-      ctx.globalAlpha = 1;
-    }
-  }
-
-  function drawPac(s) {
-    const px = s.pac.x * cell;
-    const py = s.pac.y * cell;
-    const r = cell * 0.44;
-    const angle = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2 }[s.pac.dir] || 0;
-    // Mouth closes and opens while moving, and stays open when stopped.
-    const gap = s.pac.moving ? Math.abs(Math.sin(s.pac.mouth)) * 0.32 : 0.18;
-
-    ctx.save();
-    ctx.translate(px, py);
-    ctx.rotate(angle);
-    ctx.fillStyle = PAC;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.arc(0, 0, r, gap * Math.PI, (2 - gap) * Math.PI);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  }
-
-  function drawGhost(s, ghost) {
-    const px = ghost.x * cell;
-    const py = ghost.y * cell;
-    const r = cell * 0.44;
-    const eyes = ghost.status === 'eyes';
-    const frightened = ghost.status === 'fright';
-
-    if (!eyes) {
-      // Flash white in the last two seconds of frightened mode.
-      const flashing = frightened && s.frightEnding && Math.floor(s.elapsed * 6) % 2 === 0;
-      ctx.fillStyle = frightened ? (flashing ? FRIGHT_FLASH : FRIGHT) : ghost.colour;
-
-      ctx.beginPath();
-      ctx.arc(px, py - r * 0.1, r, Math.PI, 0);
-      ctx.lineTo(px + r, py + r * 0.72);
-      // Three-pointed skirt along the bottom.
-      for (let i = 0; i < 3; i += 1) {
-        const x0 = px + r - ((i * 2 + 1) * r) / 3;
-        const x1 = px + r - ((i * 2 + 2) * r) / 3;
-        ctx.lineTo(x0, py + r * 0.4);
-        ctx.lineTo(x1, py + r * 0.72);
-      }
-      ctx.lineTo(px - r, py + r * 0.72);
-      ctx.closePath();
-      ctx.fill();
-    }
-
-    // Eyes. Frightened ghosts get a flat face instead of looking at you.
-    const look = DIR_VECTORS[ghost.dir] || { x: 0, y: 0 };
-    for (const side of [-1, 1]) {
-      const ex = px + side * r * 0.38;
-      const ey = py - r * 0.18;
-
-      if (frightened) {
-        ctx.fillStyle = FRIGHT_FLASH;
-        ctx.beginPath();
-        ctx.arc(ex, ey, r * 0.16, 0, Math.PI * 2);
-        ctx.fill();
-        continue;
-      }
-
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.ellipse(ex, ey, r * 0.26, r * 0.32, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#1a1f6b';
-      ctx.beginPath();
-      ctx.arc(ex + look.x * r * 0.12, ey + look.y * r * 0.14, r * 0.14, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    paint(ctx, game.snapshot(), cell);
   }
 
   /* ── Lifecycle ────────────────────────────────────────── */
@@ -424,4 +277,185 @@ export function initGame() {
       $('#game-start').focus();
     },
   };
+}
+
+/* ══ DRAWING ═══════════════════════════════════════════════
+   Module level so the in-page preview can reuse it. */
+
+function paint(ctx, s, cell) {
+  const w = s.cols * cell;
+  const h = s.rows * cell;
+
+  ctx.clearRect(0, 0, w, h);
+
+  /* Maze. Each wall tile is drawn as a rounded block, with edges only
+     where it meets open space, so corridors read as channels. */
+  for (let y = 0; y < s.rows; y += 1) {
+    for (let x = 0; x < s.cols; x += 1) {
+      if (!s.walls[y][x]) continue;
+      const px = x * cell;
+      const py = y * cell;
+      ctx.fillStyle = WALL;
+      ctx.fillRect(px, py, cell, cell);
+
+      ctx.strokeStyle = WALL_EDGE;
+      ctx.lineWidth = Math.max(1, cell * 0.08);
+      ctx.beginPath();
+      if (y === 0 || !s.walls[y - 1][x]) {
+        ctx.moveTo(px, py);
+        ctx.lineTo(px + cell, py);
+      }
+      if (y === s.rows - 1 || !s.walls[y + 1][x]) {
+        ctx.moveTo(px, py + cell);
+        ctx.lineTo(px + cell, py + cell);
+      }
+      if (x === 0 || !s.walls[y][x - 1]) {
+        ctx.moveTo(px, py);
+        ctx.lineTo(px, py + cell);
+      }
+      if (x === s.cols - 1 || !s.walls[y][x + 1]) {
+        ctx.moveTo(px + cell, py);
+        ctx.lineTo(px + cell, py + cell);
+      }
+      ctx.stroke();
+    }
+  }
+
+  /* Ghost house door */
+  for (let y = 0; y < s.rows; y += 1) {
+    for (let x = 0; x < s.cols; x += 1) {
+      if (!s.doors[y][x]) continue;
+      ctx.fillStyle = DOOR;
+      ctx.fillRect(x * cell, y * cell + cell * 0.42, cell, cell * 0.16);
+    }
+  }
+
+  /* Pellets. Power pellets pulse, unless reduced motion is requested. */
+  const pulse = reducedMotion() ? 1 : 0.72 + Math.sin(s.elapsed * 7) * 0.28;
+  for (const pellet of s.pellets) {
+    if (pellet.taken) continue;
+    const px = pellet.x * cell + cell / 2;
+    const py = pellet.y * cell + cell / 2;
+    ctx.fillStyle = PELLET;
+    ctx.beginPath();
+    ctx.arc(px, py, pellet.power ? cell * 0.3 * pulse : cell * 0.1, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  /* Player */
+  if (!s.respawning || Math.floor(s.elapsed * 10) % 2 === 0) drawPac(ctx, s, cell);
+
+  /* Ghosts */
+  for (const ghost of s.ghosts) drawGhost(ctx, s, cell, ghost);
+
+  /* Floating score from the last ghost eaten */
+  if (s.eatenAt) {
+    ctx.fillStyle = '#9b87f5';
+    ctx.font = `600 ${Math.round(cell * 0.72)}px 'JetBrains Mono', monospace`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.globalAlpha = Math.max(0, s.eatenAt.life);
+    ctx.fillText(String(s.eatenAt.points), s.eatenAt.x * cell, s.eatenAt.y * cell);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawPac(ctx, s, cell) {
+  const px = s.pac.x * cell;
+  const py = s.pac.y * cell;
+  const r = cell * 0.44;
+  const angle = { right: 0, down: Math.PI / 2, left: Math.PI, up: -Math.PI / 2 }[s.pac.dir] || 0;
+  // Mouth closes and opens while moving, and stays open when stopped.
+  const gap = s.pac.moving ? Math.abs(Math.sin(s.pac.mouth)) * 0.32 : 0.18;
+
+  ctx.save();
+  ctx.translate(px, py);
+  ctx.rotate(angle);
+  ctx.fillStyle = PAC;
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.arc(0, 0, r, gap * Math.PI, (2 - gap) * Math.PI);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawGhost(ctx, s, cell, ghost) {
+  const px = ghost.x * cell;
+  const py = ghost.y * cell;
+  const r = cell * 0.44;
+  const eyes = ghost.status === 'eyes';
+  const frightened = ghost.status === 'fright';
+
+  if (!eyes) {
+    // Flash white in the last two seconds of frightened mode.
+    const flashing = frightened && s.frightEnding && Math.floor(s.elapsed * 6) % 2 === 0;
+    ctx.fillStyle = frightened ? (flashing ? FRIGHT_FLASH : FRIGHT) : ghost.colour;
+
+    ctx.beginPath();
+    ctx.arc(px, py - r * 0.1, r, Math.PI, 0);
+    ctx.lineTo(px + r, py + r * 0.72);
+    // Three-pointed skirt along the bottom.
+    for (let i = 0; i < 3; i += 1) {
+      const x0 = px + r - ((i * 2 + 1) * r) / 3;
+      const x1 = px + r - ((i * 2 + 2) * r) / 3;
+      ctx.lineTo(x0, py + r * 0.4);
+      ctx.lineTo(x1, py + r * 0.72);
+    }
+    ctx.lineTo(px - r, py + r * 0.72);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Eyes. Frightened ghosts get a flat face instead of looking at you.
+  const look = DIR_VECTORS[ghost.dir] || { x: 0, y: 0 };
+  for (const side of [-1, 1]) {
+    const ex = px + side * r * 0.38;
+    const ey = py - r * 0.18;
+
+    if (frightened) {
+      ctx.fillStyle = FRIGHT_FLASH;
+      ctx.beginPath();
+      ctx.arc(ex, ey, r * 0.16, 0, Math.PI * 2);
+      ctx.fill();
+      continue;
+    }
+
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.ellipse(ex, ey, r * 0.26, r * 0.32, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#1a1f6b';
+    ctx.beginPath();
+    ctx.arc(ex + look.x * r * 0.12, ey + look.y * r * 0.14, r * 0.14, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+/* ══ IN-PAGE PREVIEW ═══════════════════════════════════════
+   A still frame of the maze for the playground section, so the
+   section shows the actual board rather than describing it. Draws
+   once per resize and runs no loop. */
+
+export function mountPreview(canvas) {
+  const ctx = canvas.getContext('2d');
+  const game = createGame();
+
+  function render() {
+    const s = game.snapshot();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.max(1, Math.round(canvas.clientWidth));
+    const cell = width / s.cols;
+    const height = Math.round(cell * s.rows);
+
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    paint(ctx, s, cell);
+  }
+
+  new ResizeObserver(render).observe(canvas);
+  render();
 }

@@ -5,34 +5,32 @@
 
 :root {
   /* ── Surface ────────────────────────────────────────────── */
-  --bg: #08090d;
-  --bg-2: #10121a;
-  --surface: #151823;
-  --surface-2: #1b1f2d;
+  --bg: #0c0c0d;
+  --bg-2: #141416;
+  --surface: #141416;
+  --surface-2: #1c1c1f;
 
   /* ── Ink ────────────────────────────────────────────────── */
-  --ink: #f5f5f7;
-  --ink-2: #c6cad6; /* body copy — bright enough to read at a glance */
-  --ink-3: #959cad; /* metadata; still ~5:1 on the darkest surface */
+  --ink: #f0eee8;
+  --ink-2: #aaa7a0; /* secondary copy */
+  --ink-3: #87847d; /* metadata and technical annotation */
 
-  /* ── Accent — used sparingly ────────────────────────────── */
-  --violet: #8665ff;
-  --violet-dim: #6c4fe0;
-  --cyan: #55ddf5;
-  --cyan-dim: #3aa8bd;
+  /* ── Accent — selected states, links, interaction feedback ── */
+  --violet: #9b87f5;
+  --violet-dim: #7a68cc;
 
-  /* Semantics for the demos */
-  --allow: #55f5a3;
-  --hold: #f5c655;
-  --block: #ff6b7d;
+  /* Semantics, kept muted so the demos read as data, not decoration */
+  --allow: #7fcf9b;
+  --hold: #d8b879;
+  --block: #e0807f;
 
-  /* ── Lines — visible, so interactive things read as interactive ── */
-  --line: rgba(245, 245, 247, 0.14);
-  --line-2: rgba(245, 245, 247, 0.26);
-  --line-3: rgba(245, 245, 247, 0.44);
+  /* ── Lines ──────────────────────────────────────────────── */
+  --line: #232326;
+  --line-2: #303034;
+  --line-3: #4a4a50;
 
   /* ── Type ───────────────────────────────────────────────── */
-  --display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --display: 'Newsreader', ui-serif, Georgia, 'Times New Roman', serif;
   --body: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
@@ -43,7 +41,9 @@
   --t-lead: clamp(1.0625rem, 1rem + 0.34vw, 1.3125rem);
   --t-h3: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
   --t-h2: clamp(1.875rem, 1.4rem + 2.1vw, 3.25rem);
-  --t-h1: clamp(2.5rem, 1.5rem + 4.6vw, 5rem);
+  /* Sized so the headline, intro and buttons all sit above the fold
+     alongside the portrait, rather than pushing them off it. */
+  --t-h1: clamp(2.125rem, 1.35rem + 2.6vw, 3.5rem);
 
   /* ── Space ──────────────────────────────────────────────── */
   --s-1: 0.25rem;
@@ -146,14 +146,16 @@ ol {
   padding: 0;
 }
 
+/* Editorial serif for headlines only. Serifs want near-zero tracking —
+   the negative letter-spacing a geometric sans needs ruins them. */
 h1,
 h2,
 h3,
 h4 {
   font-family: var(--display);
-  font-weight: 500;
-  line-height: 1.04;
-  letter-spacing: -0.03em;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.012em;
   text-wrap: balance;
 }
 
@@ -163,7 +165,7 @@ p {
 
 /* ── Focus ────────────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--cyan);
+  outline: 2px solid var(--violet);
   outline-offset: 3px;
   border-radius: 1px;
 }

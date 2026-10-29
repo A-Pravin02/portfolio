@@ -14,47 +14,37 @@ import { getProject } from './data/projects.js';
    this keeps profile.js authoritative if the two ever drift. */
 
 export function renderHero() {
-  $('#hero-eyebrow').textContent = profile.eyebrow;
+  $('.hero__label').textContent = profile.label;
+  $('.hero__name').textContent = profile.name;
+  $('#hero-headline').textContent = profile.headline;
   $('#hero-intro').textContent = profile.intro;
-  $('#hero-headline').innerHTML = h`${profile.headline.map(
-    (line) => h`<span class="line">${line}</span>`,
-  )}`.toString();
+  $('.hero__portrait figcaption').textContent = profile.photo.caption;
+  $('.hero__portrait img').alt = profile.photo.alt;
 
   const focus = $('#hero-focus');
-  const status = profile.availability?.label || profile.currentFocus;
-  if (status) {
-    focus.innerHTML = h`<span class="status-dot"></span>${status}`.toString();
-  } else {
-    focus.closest('div')?.remove();
-  }
+  if (profile.currentFocus) focus.textContent = profile.currentFocus;
+  else focus.remove();
 }
 
 /* ══ ABOUT ═════════════════════════════════════════════════ */
 
 export function renderAbout() {
-  const { photo, about, education, interests } = profile;
+  const { about, education, interests } = profile;
 
+  // No portrait here — it is in the hero, and running it twice on one page
+  // reads as a template rather than a decision.
   $('#about-body').innerHTML = h`
     <div class="about__grid">
       <div class="reveal">
         ${about.map((para) => h`<p class="prose">${para}</p>`)}
       </div>
 
-      <figure class="about__portrait reveal" style="margin: 0">
-        <img
-          src="${photo.src}"
-          alt="${photo.alt}"
-          width="640"
-          height="640"
-          loading="lazy"
-          decoding="async"
-        />
-        <figcaption class="about__meta">
-          <strong>${education.degree}</strong>
-          <span>${education.institution}</span>
-          <span class="mono" style="text-transform: none">${[education.period, education.detail].filter(Boolean).join(' · ')}</span>
-        </figcaption>
-      </figure>
+      <aside class="about__meta reveal">
+        <p class="mono">Studying</p>
+        <strong>${education.degree}</strong>
+        <span>${education.institution}</span>
+        <span class="mono" style="text-transform: none">${[education.period, education.detail].filter(Boolean).join(' · ')}</span>
+      </aside>
     </div>
 
     <dl class="interests reveal">

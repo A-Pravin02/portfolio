@@ -6,8 +6,9 @@ build step, no bundler, nothing to install.
 Two things in here are more than a page: an interactive walkthrough of the
 [AgentBridge](https://github.com/A-Pravin02/Agentbridge) authorization pipeline and of the
 [PRAXIS](https://github.com/A-Pravin02/praxis-neurosymbolic) reasoning architecture. There is also a
-simulated terminal and a playable game, **Maze Override** — both opened from labelled buttons in
-the top bar and in the footer.
+simulated terminal and a playable game, **Maze Override**, which has its own Playground section in the
+page and opens from labelled **Terminal** and **Play** buttons in the top bar, the mobile menu and the
+footer. Neither is hidden behind a shortcut.
 
 ## Run it locally
 
@@ -51,13 +52,32 @@ Append to `achievements.js`. Entries with `visible: false` stay in the file but 
 site — that is where anything unconfirmed belongs. Flip it to `true` once you have the certificate,
 and add `credential` when you have a URL to point at.
 
+### Replacing the portrait
+
+The hero portrait is the first thing on the page, so it is served at two sizes from a `srcset` in
+`index.html` rather than as one large file. To swap it:
+
+1. Put a square image in `assets/img/` (anything from about 1000px up).
+2. Regenerate the two sizes the hero asks for:
+
+```bash
+python -c "from PIL import Image; im=Image.open('assets/img/YOURS.jpg'); [im.resize((w,w)).save(f'assets/img/pravin-{w}.webp','WEBP',quality=84,method=6) for w in (560,1120)]"
+```
+
+3. The caption and alt text come from `profile.photo` in `data/profile.js`.
+
+If you would rather use a single file, replace the `srcset` and `sizes` attributes on the hero `img`
+with one `src`. Keep the `width` and `height` attributes either way — they reserve the space and stop
+the page shifting as the image arrives.
+
+The portrait is deliberately a plain bordered frame: no halo, ring or glow.
+
 ### Links and assets
 
 - Contact links are in `profile.links`. Anything set to `null` or `''` is omitted from the UI
   entirely, rather than rendering a dead link — so delete a value instead of faking one.
 - The résumé lives at `assets/docs/`. Replace the PDF and update `profile.links.resume`.
-- The portrait is `profile.photo`. Project images go in `assets/img/` and are referenced from each
-  project's `image` key.
+- Project images go in `assets/img/` and are referenced from each project's `image` key.
 
 ## Keyboard
 
@@ -73,9 +93,11 @@ and add `credential` when you have a URL to point at.
 ## Accessibility and motion
 
 Overlays are native `<dialog>` elements, so focus handling, the top layer and `Esc` come from the
-browser rather than from script. `prefers-reduced-motion: reduce` disables the custom cursor,
-pointer parallax, magnetic buttons, scroll reveals and game particles; the interactive demos then
-resolve instantly instead of stepping. The design is built to hold up with every animation off.
+browser rather than from script. There is no cursor-following glow, no custom cursor and no magnetic
+buttons — hover and press states carry the feedback instead, which keeps touch and reduced-motion
+users on the same footing. `prefers-reduced-motion: reduce` turns off the scroll reveals and the
+pellet pulse, and resolves the interactive demos instantly instead of stepping them. The design is
+built to hold up with every animation off.
 
 ## Deploying
 
@@ -95,7 +117,7 @@ publish directory to `.`.
 index.html              page shell, dialogs
 assets/css/
   tokens.css            colour, type scale, spacing, motion, resets
-  layout.css            top nav, hero, sections
+  layout.css            top nav, hero, sections, playground
   features.css          cursor, dialogs, demos, terminal, game
 assets/js/
   main.js               bootstrap and keyboard shortcuts

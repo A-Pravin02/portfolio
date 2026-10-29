@@ -58,7 +58,7 @@ export function mountPipeline(host, project) {
             <dl class="kv" data-request></dl>
 
             <div class="game__actions" style="justify-content: flex-start">
-              <button class="btn btn--primary" type="button" data-run data-magnetic>Run request</button>
+              <button class="btn btn--primary" type="button" data-run>Run request</button>
               <button class="btn btn--ghost" type="button" data-reset>Reset</button>
             </div>
           </div>

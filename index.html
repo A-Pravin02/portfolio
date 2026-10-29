@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
     />
     <link rel="stylesheet" href="assets/css/tokens.css" />
     <link rel="stylesheet" href="assets/css/layout.css" />
@@ -35,18 +35,11 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <!-- Ambient background. Decorative only. -->
+    <!-- Ambient background. Decorative only, and deliberately flat —
+         no pointer-following glow, no orbits. -->
     <div class="ambient" aria-hidden="true">
       <div class="ambient__wash"></div>
-      <div class="ambient__grid"></div>
       <div class="ambient__grain"></div>
-      <div class="ambient__light" id="pointer-light"></div>
-    </div>
-
-    <!-- Cursor indicator. Additive: the native cursor stays visible. -->
-    <div class="cursor" id="cursor" data-mode="default" aria-hidden="true">
-      <span class="cursor__ring"></span>
-      <span class="cursor__label" id="cursor-label"></span>
     </div>
 
     <!-- ══ TOP BAR ═════════════════════════════════════════ -->
@@ -58,6 +51,7 @@
         <a href="#projects">Projects</a>
         <a href="#achievements">Achievements</a>
         <a href="#skills">Skills</a>
+        <a href="#playground">Playground</a>
         <a href="#contact">Contact</a>
       </nav>
 
@@ -71,7 +65,7 @@
           <kbd id="palette-key">Ctrl K</kbd>
         </button>
 
-        <button class="btn btn--ghost topbar__feature" data-open="terminal" data-cursor="terminal">
+        <button class="btn btn--ghost topbar__feature" data-open="terminal">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="2.5" y="4" width="19" height="16" rx="2" />
             <path d="m7 9 3 3-3 3" />
@@ -80,7 +74,7 @@
           <span>Terminal</span>
         </button>
 
-        <button class="btn btn--ghost topbar__feature" data-open="game" data-cursor="play">
+        <button class="btn btn--ghost topbar__feature" data-open="game">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M8 5.5v13l11-6.5z" />
           </svg>
@@ -106,6 +100,7 @@
       <a href="#projects">Projects</a>
       <a href="#achievements">Achievements</a>
       <a href="#skills">Skills</a>
+        <a href="#playground">Playground</a>
       <a href="#contact">Contact</a>
       <a href="#" data-open="palette">Search</a>
       <a href="#" data-open="terminal">Terminal</a>
@@ -113,79 +108,50 @@
     </nav>
 
     <main id="main">
-      <!-- ══ HERO ══════════════════════════════════════════ -->
+      <!-- ══ HERO ══════════════════════════════════════════
+           Markup order is the mobile order: label and name, then the
+           portrait, then the headline. Desktop regrids it into two
+           columns without moving the portrait below the fold. -->
       <section class="hero" id="top">
-        <div class="hero__figure" aria-hidden="true">
-          <svg viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="hg1" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#8665FF" stop-opacity="0.5" />
-                <stop offset="100%" stop-color="#55DDF5" stop-opacity="0.08" />
-              </linearGradient>
-              <linearGradient id="hg2" x1="1" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#55DDF5" stop-opacity="0.35" />
-                <stop offset="100%" stop-color="#8665FF" stop-opacity="0" />
-              </linearGradient>
-            </defs>
-            <g class="plx" data-depth="18">
-              <circle cx="400" cy="400" r="286" stroke="url(#hg1)" stroke-width="1" />
-              <circle cx="400" cy="400" r="208" stroke="rgba(245,245,247,0.07)" stroke-width="1" />
-            </g>
-            <g class="plx" data-depth="34">
-              <path d="M400 114 L686 400 L400 686 L114 400 Z" stroke="url(#hg2)" stroke-width="1" />
-              <path d="M400 186 L614 400 L400 614 L186 400 Z" stroke="rgba(245,245,247,0.06)" stroke-width="1" />
-            </g>
-            <g class="plx" data-depth="56">
-              <circle cx="400" cy="114" r="3.5" fill="#8665FF" />
-              <circle cx="686" cy="400" r="2.5" fill="#55DDF5" />
-              <circle cx="400" cy="686" r="2" fill="rgba(245,245,247,0.5)" />
-              <circle cx="114" cy="400" r="2.5" fill="#8665FF" />
-              <path d="M400 114 L686 400" stroke="rgba(134,101,255,0.22)" stroke-width="1" />
-              <path d="M114 400 L400 686" stroke="rgba(85,221,245,0.16)" stroke-width="1" />
-            </g>
-          </svg>
-        </div>
-
         <div class="hero__grid">
-          <div class="plx" data-depth="8">
-            <p class="mono hero__eyebrow" id="hero-eyebrow">Independently curious. Engineering-driven.</p>
+          <div class="hero__ident">
+            <p class="mono hero__label">Engineering / AI systems / Research</p>
+            <p class="hero__name">Pravin Anbalagan</p>
+          </div>
 
-            <h1 id="hero-headline">
-              <span class="line">Building intelligent systems.</span>
-              <span class="line">Exploring what comes next.</span>
-            </h1>
+          <figure class="hero__portrait">
+            <img
+              src="assets/img/pravin-560.webp"
+              srcset="assets/img/pravin-560.webp 560w, assets/img/pravin-1120.webp 1120w"
+              sizes="(min-width: 980px) 38vw, (min-width: 640px) 420px, 76vw"
+              alt="Pravin Anbalagan"
+              width="560"
+              height="560"
+              fetchpriority="high"
+              decoding="async"
+            />
+            <figcaption class="mono">Pravin Anbalagan · VIT Vellore</figcaption>
+          </figure>
+
+          <div class="hero__copy">
+            <h1 id="hero-headline">I like understanding what happens beneath the surface.</h1>
 
             <p class="lead hero__intro" id="hero-intro">
-              I’m Pravin Anbalagan — a Computer Science and Business Systems student at VIT Vellore
-              working on intelligent systems, AI research, software engineering, and quantitative
-              thinking.
+              I’m Pravin Anbalagan, a Computer Science and Business Systems student at VIT Vellore. I
+              build software, explore intelligent systems, and investigate what happens when models
+              reason, systems fail, or autonomous agents take action.
             </p>
 
             <div class="hero__actions">
-              <a class="btn btn--primary" href="#projects" data-magnetic>Explore my work</a>
-              <a class="btn" href="#contact" data-magnetic>Get in touch</a>
+              <a class="btn btn--primary" href="#projects">Explore my work</a>
+              <a class="btn" href="#contact">Get in touch</a>
             </div>
+
+            <p class="hero__focus" id="hero-focus">
+              Currently building AgentBridge — an authorization layer for AI agents.
+            </p>
           </div>
-
-          <aside class="hero__panel plx" data-depth="-14" aria-label="Current status">
-            <dl>
-              <div>
-                <dt class="mono">Now</dt>
-                <dd id="hero-focus"><span class="status-dot"></span>Currently building AgentBridge</dd>
-              </div>
-              <div>
-                <dt class="mono">Local time</dt>
-                <dd><span id="hero-clock" class="mono" style="font-size: var(--t-sm); text-transform: none; color: var(--ink)">—</span> · Vellore, India</dd>
-              </div>
-              <div>
-                <dt class="mono">Reading</dt>
-                <dd>Neuro-symbolic reasoning, agent authorization, market microstructure</dd>
-              </div>
-            </dl>
-          </aside>
         </div>
-
-        <p class="mono hero__scroll" aria-hidden="true"><i></i>Scroll</p>
       </section>
 
       <!-- ══ ABOUT ═════════════════════════════════════════ -->
@@ -224,10 +190,47 @@
         <div id="skills-body"></div>
       </section>
 
+      <!-- ══ PLAYGROUND ════════════════════════════════════ -->
+      <section class="section" id="playground" aria-labelledby="play-h">
+        <div class="section__head">
+          <p class="mono section__index">05 — Playground</p>
+          <h2 id="play-h">Something to click rather than read</h2>
+        </div>
+
+        <div class="playground">
+          <div class="playground__copy reveal">
+            <p class="prose">
+              A maze chase, written from scratch — grid-locked movement, collision against the maze,
+              and four ghosts that each hunt differently. One tails your tile, one aims four tiles
+              ahead to cut you off, one flanks using a vector off the first, and one gives up and
+              retreats when it gets close. The whole thing is about a page of game logic with no
+              engine and no dependencies.
+            </p>
+
+            <dl class="playground__facts">
+              <div><dt class="mono">Goal</dt><dd>Clear all 159 pellets</dd></div>
+              <div><dt class="mono">Controls</dt><dd><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows · swipe on touch</dd></div>
+              <div><dt class="mono">Lives</dt><dd>Three. Eat a big pellet and the ghosts are edible for seven seconds.</dd></div>
+              <div><dt class="mono">A run</dt><dd>About a minute</dd></div>
+            </dl>
+
+            <div class="hero__actions">
+              <button class="btn btn--accent" data-open="game">Play now</button>
+              <a class="btn btn--ghost" href="https://github.com/A-Pravin02" target="_blank" rel="noopener noreferrer">See the code</a>
+            </div>
+          </div>
+
+          <figure class="playground__board reveal">
+            <canvas id="game-preview" width="380" height="420" role="img" aria-label="Still frame of the Maze Override board"></canvas>
+            <figcaption class="mono">Maze Override · 19 × 21 tiles</figcaption>
+          </figure>
+        </div>
+      </section>
+
       <!-- ══ CONTACT ═══════════════════════════════════════ -->
       <section class="section contact" id="contact" aria-labelledby="contact-h">
         <div class="section__head">
-          <p class="mono section__index">05 — Contact</p>
+          <p class="mono section__index">06 — Contact</p>
         </div>
         <div id="contact-body"></div>
       </section>
@@ -236,8 +239,8 @@
     <footer class="footer">
       <p class="mono">Pravin Anbalagan · Built from scratch · <span id="year">2026</span></p>
       <div class="footer__actions">
-        <button class="btn btn--ghost" data-open="terminal" data-cursor="terminal">Open terminal</button>
-        <button class="btn btn--ghost" data-open="game" data-cursor="play">Play Maze Override</button>
+        <button class="btn btn--ghost" data-open="terminal">Open terminal</button>
+        <button class="btn btn--ghost" data-open="game">Play Maze Override</button>
       </div>
     </footer>
 
@@ -371,7 +374,7 @@
               <span><kbd>Esc</kbd> pause · <kbd>R</kbd> restart · 3 lives</span>
             </div>
             <div class="game__actions">
-              <button class="btn btn--primary" id="game-start" data-magnetic>Start run</button>
+              <button class="btn btn--primary" id="game-start">Start run</button>
             </div>
           </div>
 

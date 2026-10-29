@@ -1,143 +1,12 @@
 /* ─────────────────────────────────────────────────────────────
-   INTERACTIONS — cursor, pointer light, parallax, magnetism,
-   scroll reveals, section tracking, chrome.
+   INTERACTIONS — scroll reveals, section tracking, chrome.
 
-   Everything pointer-driven writes to transforms or custom
-   properties inside one rAF loop. Nothing here triggers layout,
-   and all of it switches off for reduced motion or touch.
+   Deliberately small. There is no cursor-following glow, no custom
+   cursor and no magnetic buttons: hover and press states carry the
+   feedback instead, which survives touch and reduced motion intact.
    ───────────────────────────────────────────────────────────── */
 
-import { $, $$, clamp, lerp, reducedMotion, finePointer, isMac, goToSection } from './utils.js';
-
-const CURSOR_LABELS = {
-  project: 'Explore',
-  play: 'Play',
-  terminal: 'Shell',
-};
-
-/* ══ POINTER LAYER ═════════════════════════════════════════ */
-
-export function initPointer() {
-  if (!finePointer() || reducedMotion()) return;
-
-  const cursor = $('#cursor');
-  const label = $('#cursor-label');
-  const light = $('#pointer-light');
-  const layers = $$('.plx');
-
-  // Target (raw pointer) and rendered (damped) positions.
-  const target = { x: innerWidth / 2, y: innerHeight / 2 };
-  const ring = { x: target.x, y: target.y };
-  const glow = { x: target.x, y: target.y };
-  let running = false;
-  let mode = 'default';
-
-  document.documentElement.classList.add('has-pointer');
-
-  function onMove(event) {
-    target.x = event.clientX;
-    target.y = event.clientY;
-    if (!running) {
-      running = true;
-      requestAnimationFrame(frame);
-    }
-  }
-
-  function frame() {
-    // Two damping rates: the ring tracks tightly, the light drifts.
-    ring.x = lerp(ring.x, target.x, 0.22);
-    ring.y = lerp(ring.y, target.y, 0.22);
-    glow.x = lerp(glow.x, target.x, 0.05);
-    glow.y = lerp(glow.y, target.y, 0.05);
-
-    cursor.style.transform = `translate3d(${ring.x}px, ${ring.y}px, 0)`;
-    light.style.setProperty('--px', `${glow.x}px`);
-    light.style.setProperty('--py', `${glow.y}px`);
-
-    // Hero parallax, driven by pointer offset from centre.
-    const nx = (target.x / innerWidth - 0.5) * 2;
-    const ny = (target.y / innerHeight - 0.5) * 2;
-    for (const layer of layers) {
-      const depth = Number(layer.dataset.depth || 0);
-      layer.style.transform = `translate3d(${(-nx * depth).toFixed(2)}px, ${(-ny * depth * 0.55).toFixed(2)}px, 0)`;
-    }
-
-    const settled =
-      Math.abs(ring.x - target.x) < 0.3 &&
-      Math.abs(ring.y - target.y) < 0.3 &&
-      Math.abs(glow.x - target.x) < 0.5 &&
-      Math.abs(glow.y - target.y) < 0.5;
-
-    if (settled) running = false;
-    else requestAnimationFrame(frame);
-  }
-
-  function setMode(next) {
-    if (next === mode) return;
-    mode = next;
-    cursor.dataset.mode = next;
-    label.textContent = CURSOR_LABELS[next] || '';
-  }
-
-  function onOver(event) {
-    const node = event.target instanceof Element ? event.target : null;
-    if (!node) return;
-    const tagged = node.closest('[data-cursor]');
-    if (tagged) return setMode(tagged.dataset.cursor);
-    if (node.closest('a, button, summary, input, label, [role="button"], .gnode')) {
-      return setMode('interactive');
-    }
-    setMode('default');
-  }
-
-  addEventListener('pointermove', onMove, { passive: true });
-  addEventListener('pointerover', onOver, { passive: true });
-  addEventListener('pointerleave', () => cursor.style.setProperty('opacity', '0'));
-  addEventListener('pointerenter', () => cursor.style.removeProperty('opacity'));
-}
-
-/* ══ MAGNETIC BUTTONS ══════════════════════════════════════
-   Translation only, so nothing in the layout moves. */
-
-export function initMagnetic() {
-  if (!finePointer() || reducedMotion()) return;
-
-  for (const el of $$('[data-magnetic]')) {
-    let frameId = 0;
-    let tx = 0;
-    let ty = 0;
-
-    const settle = () => {
-      frameId = 0;
-      el.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0)`;
-    };
-
-    const schedule = () => {
-      if (!frameId) frameId = requestAnimationFrame(settle);
-    };
-
-    el.addEventListener(
-      'pointermove',
-      (event) => {
-        const r = el.getBoundingClientRect();
-        // Pull is strongest at the edges, capped so the control never
-        // travels far enough to escape the pointer.
-        tx = clamp((event.clientX - (r.left + r.width / 2)) * 0.22, -10, 10);
-        ty = clamp((event.clientY - (r.top + r.height / 2)) * 0.3, -7, 7);
-        el.style.transition = 'transform 90ms linear';
-        schedule();
-      },
-      { passive: true },
-    );
-
-    el.addEventListener('pointerleave', () => {
-      tx = 0;
-      ty = 0;
-      el.style.transition = 'transform 420ms cubic-bezier(0.22, 1, 0.36, 1)';
-      schedule();
-    });
-  }
-}
+import { $, $$, reducedMotion, isMac, goToSection } from './utils.js';
 
 /* ══ SCROLL REVEALS ════════════════════════════════════════
    IntersectionObserver rather than scroll-driven CSS: these must
@@ -214,7 +83,7 @@ export function initChrome() {
   });
 
   // Active section in the nav.
-  const sections = ['#about', '#projects', '#achievements', '#skills', '#contact']
+  const sections = ['#about', '#projects', '#achievements', '#skills', '#playground', '#contact']
     .map((id) => document.querySelector(id))
     .filter(Boolean);
 
@@ -278,25 +147,4 @@ export function initChrome() {
 
   const year = $('#year');
   if (year) year.textContent = String(new Date().getFullYear());
-}
-
-/* ══ LOCAL CLOCK ═══════════════════════════════════════════ */
-
-export function initClock(timeZone) {
-  const node = $('#hero-clock');
-  if (!node) return;
-
-  const fmt = new Intl.DateTimeFormat('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone,
-    hour12: false,
-  });
-
-  const tick = () => {
-    node.textContent = fmt.format(new Date());
-  };
-
-  tick();
-  setInterval(tick, 20_000);
 }
