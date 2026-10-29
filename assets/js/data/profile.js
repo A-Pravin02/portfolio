@@ -47,7 +47,9 @@ export const profile = {
     degree: 'B.Tech, Computer Science and Business Systems',
     institution: 'Vellore Institute of Technology, Vellore',
     period: '2024 — 2028',
-    detail: 'CGPA 8.68 / 10',
+    // Grades belong on the résumé, not the site. Anything put here is
+    // appended after the period; leave it null to show nothing.
+    detail: null,
   },
 
   // Links. Anything left as null or '' is omitted from the UI entirely.

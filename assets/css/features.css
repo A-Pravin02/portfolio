@@ -973,14 +973,19 @@ tr.is-ours .bar > i {
   padding: var(--s-4);
 }
 
+/* Height is set from the script to match the maze's 19 × 21 tiles. */
 .game__canvas {
   width: 100%;
-  max-width: 560px;
-  aspect-ratio: 1;
+  max-width: 460px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #070810;
+  background: #05060c;
   touch-action: none;
+}
+
+.game__lives {
+  color: var(--hold);
+  letter-spacing: 0.1em;
 }
 
 /* Overlay screens: ready / paused / won / lost */

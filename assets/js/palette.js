@@ -28,7 +28,7 @@ export function initPalette({ openTerminal, openGame, openProject }) {
     })),
 
     { label: 'Open terminal', hint: 'Simulated shell', kind: 'command', run: openTerminal },
-    { label: 'Play System Override', hint: 'Hidden layer', kind: 'command', run: openGame },
+    { label: 'Play Maze Override', hint: 'Pellets, ghosts, three lives', kind: 'command', run: openGame },
   ];
 
   if (profile.links.github) {

@@ -168,9 +168,9 @@ const commands = {
   },
 
   game: {
-    summary: 'Launch System Override',
+    summary: 'Launch Maze Override',
     run() {
-      write(h`Booting ${key('SYSTEM OVERRIDE')}…`);
+      write(h`Booting ${key('MAZE OVERRIDE')}…`);
       close();
       setTimeout(() => document.dispatchEvent(new CustomEvent('portfolio:open', { detail: 'game' })), 180);
     },

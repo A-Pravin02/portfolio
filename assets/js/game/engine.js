@@ -1,9 +1,13 @@
 /* ─────────────────────────────────────────────────────────────
-   SYSTEM OVERRIDE — game engine.
+   MAZE OVERRIDE — game engine.
 
-   Pure logic: no DOM, no canvas, no timers of its own. The view
-   owns the animation frame and calls update(dt) / reads state().
-   Coordinates are in grid cells; the view scales them to pixels.
+   Pac-Man mechanics: pellets, power pellets, four ghosts with
+   distinct targeting, scatter/chase cycling, frightened mode and
+   eyes returning to the house.
+
+   Pure logic — no DOM, no canvas, no timers. The view owns the
+   animation frame and calls update(dt) / snapshot(). Positions are
+   in grid cells, with x.5 / y.5 being a tile centre.
    ───────────────────────────────────────────────────────────── */
 
 export const STATES = Object.freeze({
@@ -14,108 +18,275 @@ export const STATES = Object.freeze({
   LOST: 'lost',
 });
 
-/* '#' wall · '.' floor · 'P' spawn · 'F' fragment · 'E' exit */
+/* '#' wall · '.' pellet · 'o' power pellet · ' ' open floor
+   'P' player spawn · 'G' ghost house · '-' house door (ghosts only) */
 const MAP = [
-  '##############',
-  '#P.........F.#',
-  '#.##..##..##.#',
-  '#.#....F...#.#',
-  '#....##...#..#',
-  '#.##..#.##...#',
-  '#...F..#..##.#',
-  '#.##..##...#.#',
-  '#..#..F.##...#',
-  '#.##.....#.#.#',
-  '#....##..#.F.#',
-  '#.##..#.F..#E#',
-  '#............#',
-  '##############',
+  '###################',
+  '#........#........#',
+  '#o##.###.#.###.##o#',
+  '#.................#',
+  '#.##.#.#####.#.##.#',
+  '#....#...#...#....#',
+  '####.#.#####.#.####',
+  '####.#.......#.####',
+  '####.##     ##.####',
+  '####.####-####.####',
+  '       #GGG#       ',
+  '####.#########.####',
+  '####.#.#####.#.####',
+  '#........#........#',
+  '#.##.###.#.###.##.#',
+  '#o.#.....P.....#.o#',
+  '##.#.#.#####.#.#.##',
+  '#....#...#...#....#',
+  '#.###.#######.###.#',
+  '#.................#',
+  '###################',
 ];
 
-const PLAYER_RADIUS = 0.3;
-const PLAYER_SPEED = 3.7; // cells per second
-const SENTRY_RADIUS = 0.34;
-const PICKUP_RADIUS = 0.42;
+const SPEED = 5.6; // cells per second
+const GHOST_SPEED = 5.2;
+const FRIGHT_SPEED = 3.1;
+const EYES_SPEED = 11;
+const FRIGHT_TIME = 7; // seconds
+const CENTRE_EPS = 1e-6;
 
-/* Sentry patrols. Each runs along one axis and reverses at walls, or at
-   an optional `min`/`max` bound where a full-corridor sweep would be unfair. */
-const SENTRY_ROUTES = [
-  { x: 6.5, y: 12.5, axis: 'x', dir: 1, speed: 3.4 },
-  // Sweeps the lower half of the spawn column, so the first move is survivable.
-  { x: 1.5, y: 8.5, axis: 'y', dir: 1, speed: 3.0, min: 5.5, max: 12.5 },
-  { x: 6.5, y: 9.5, axis: 'x', dir: 1, speed: 3.2 },
-  // Patrols the column the exit sits in, slowly enough to be timed.
-  { x: 12.5, y: 6.5, axis: 'y', dir: 1, speed: 2.4 },
+const DIRS = {
+  up: { x: 0, y: -1 },
+  down: { x: 0, y: 1 },
+  left: { x: -1, y: 0 },
+  right: { x: 1, y: 0 },
+};
+const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
+
+/* Scatter corners, one per ghost, in the classic arrangement. */
+const GHOSTS = [
+  { id: 'blinky', colour: '#ff5a5a', scatter: { x: 17, y: 1 }, release: 0, start: { x: 9.5, y: 8.5 }, home: false },
+  { id: 'pinky', colour: '#ffa8dc', scatter: { x: 1, y: 1 }, release: 0, start: { x: 9.5, y: 10.5 }, home: true },
+  { id: 'inky', colour: '#55ddf5', scatter: { x: 17, y: 19 }, release: 4, start: { x: 8.5, y: 10.5 }, home: true },
+  { id: 'clyde', colour: '#ffb852', scatter: { x: 1, y: 19 }, release: 9, start: { x: 10.5, y: 10.5 }, home: true },
 ];
+
+/* Mode schedule. The last entry runs for the rest of the level. */
+const MODES = [
+  { mode: 'scatter', time: 7 },
+  { mode: 'chase', time: 20 },
+  { mode: 'scatter', time: 7 },
+  { mode: 'chase', time: Infinity },
+];
+
+const DOOR = { x: 9, y: 9 };
+const HOUSE_EXIT = { x: 9.5, y: 8.5 };
 
 export function createGame() {
   const rows = MAP.length;
   const cols = MAP[0].length;
 
-  let walls = [];
-  let spawn = { x: 1.5, y: 1.5 };
-  let exitCell = { x: 12, y: 11 };
-  let fragmentCells = [];
+  const walls = [];
+  const doors = [];
+  let spawn = { x: 9.5, y: 15.5 };
+  const pelletCells = [];
 
-  // Parse the map once.
   for (let y = 0; y < rows; y += 1) {
     walls[y] = [];
+    doors[y] = [];
     for (let x = 0; x < cols; x += 1) {
       const ch = MAP[y][x];
       walls[y][x] = ch === '#';
+      doors[y][x] = ch === '-';
       if (ch === 'P') spawn = { x: x + 0.5, y: y + 0.5 };
-      if (ch === 'E') exitCell = { x, y };
-      if (ch === 'F') fragmentCells.push({ x: x + 0.5, y: y + 0.5 });
+      if (ch === '.') pelletCells.push({ x, y, power: false });
+      if (ch === 'o') pelletCells.push({ x, y, power: true });
     }
   }
 
   let state = STATES.READY;
-  let player = { ...spawn };
-  let fragments = [];
-  let sentries = [];
+  let pellets = [];
+  let pac = null;
+  let ghosts = [];
+  let score = 0;
+  let lives = 3;
   let elapsed = 0;
+  let modeIndex = 0;
+  let modeTimer = 0;
+  let frightTimer = 0;
+  let ghostCombo = 0;
+  let eatenAt = null; // {x, y, points} for the floating score
+  let respawning = 0; // brief freeze after losing a life
   let lostReason = '';
-  let exitOpen = false;
-  let flash = 0; // collision feedback, decays in the view
 
-  function isWall(cx, cy) {
-    if (cy < 0 || cy >= rows || cx < 0 || cx >= cols) return true;
-    return walls[cy][cx];
+  /* ── Grid helpers ─────────────────────────────────────── */
+
+  const wrapX = (x) => (x < 0 ? x + cols : x >= cols ? x - cols : x);
+
+  function blocked(cx, cy, asGhost) {
+    const x = wrapX(cx);
+    if (cy < 0 || cy >= rows) return true;
+    if (walls[cy][x]) return true;
+    if (doors[cy][x] && !asGhost) return true;
+    return false;
   }
 
-  /** Axis-separated circle-vs-grid collision, so sliding along a wall works. */
-  function moveAxis(pos, delta, axis) {
-    const next = { ...pos };
-    next[axis] += delta;
+  const tileOf = (e) => ({ x: Math.floor(wrapX(e.x)), y: Math.floor(e.y) });
 
-    const minX = Math.floor(next.x - PLAYER_RADIUS);
-    const maxX = Math.floor(next.x + PLAYER_RADIUS);
-    const minY = Math.floor(next.y - PLAYER_RADIUS);
-    const maxY = Math.floor(next.y + PLAYER_RADIUS);
+  function canGo(tile, dir, asGhost) {
+    const d = DIRS[dir];
+    return !blocked(tile.x + d.x, tile.y + d.y, asGhost);
+  }
 
-    for (let cy = minY; cy <= maxY; cy += 1) {
-      for (let cx = minX; cx <= maxX; cx += 1) {
-        if (!isWall(cx, cy)) continue;
-        // Push back out of the blocking cell on this axis only.
-        if (axis === 'x') {
-          next.x = delta > 0 ? cx - PLAYER_RADIUS - 0.001 : cx + 1 + PLAYER_RADIUS + 0.001;
-        } else {
-          next.y = delta > 0 ? cy - PLAYER_RADIUS - 0.001 : cy + 1 + PLAYER_RADIUS + 0.001;
+  /**
+   * Move an entity along its direction, stopping at tile centres to let
+   * `decide` pick the next one. Sub-stepping keeps turns exact instead of
+   * letting a large dt skip past a junction.
+   */
+  function advance(entity, distance, asGhost, decide) {
+    let remaining = distance;
+    let guard = 0;
+
+    while (remaining > 0 && guard < 32) {
+      guard += 1;
+
+      const tile = tileOf(entity);
+      const centreX = tile.x + 0.5;
+      const centreY = tile.y + 0.5;
+      const atCentre =
+        Math.abs(entity.x - centreX) < 1e-4 && Math.abs(entity.y - centreY) < 1e-4;
+
+      if (atCentre) {
+        entity.x = centreX;
+        entity.y = centreY;
+        decide(entity, tile);
+        if (!entity.dir || !canGo(tile, entity.dir, asGhost)) {
+          entity.moving = false;
+          return;
         }
-        return next;
+        entity.moving = true;
+      }
+
+      const d = DIRS[entity.dir];
+      // Distance to the next tile centre along the heading. Centres sit at
+      // k + 0.5, so this is the gap to the nearest one in that direction.
+      const pos = d.x !== 0 ? entity.x : entity.y;
+      const toCentre =
+        (d.x > 0 || d.y > 0)
+          ? Math.floor(pos - 0.5) + 1.5 - pos
+          : pos - (Math.ceil(pos - 0.5) - 0.5);
+
+      const step = Math.min(remaining, Math.max(toCentre, CENTRE_EPS));
+      entity.x += d.x * step;
+      entity.y += d.y * step;
+      entity.x = wrapX(entity.x);
+      remaining -= step;
+    }
+  }
+
+  /* ── Ghost targeting ──────────────────────────────────── */
+
+  function aheadOf(entity, n) {
+    const d = DIRS[entity.dir] || { x: 0, y: 0 };
+    return { x: Math.floor(entity.x) + d.x * n, y: Math.floor(entity.y) + d.y * n };
+  }
+
+  function targetFor(ghost) {
+    if (ghost.status === 'eyes') return DOOR;
+    if (mode() === 'scatter') return ghost.scatter;
+
+    const pacTile = tileOf(pac);
+
+    switch (ghost.id) {
+      case 'blinky':
+        return pacTile;
+
+      case 'pinky':
+        // Four tiles ahead of the player.
+        return aheadOf(pac, 4);
+
+      case 'inky': {
+        // The vector from Blinky to two tiles ahead of the player, doubled.
+        const blinky = ghosts.find((g) => g.id === 'blinky');
+        const pivot = aheadOf(pac, 2);
+        if (!blinky) return pacTile;
+        return {
+          x: pivot.x + (pivot.x - Math.floor(blinky.x)),
+          y: pivot.y + (pivot.y - Math.floor(blinky.y)),
+        };
+      }
+
+      case 'clyde': {
+        // Chases until it gets close, then retreats to its corner.
+        const dist = Math.hypot(pac.x - ghost.x, pac.y - ghost.y);
+        return dist > 8 ? pacTile : ghost.scatter;
+      }
+
+      default:
+        return pacTile;
+    }
+  }
+
+  function chooseGhostDir(ghost, tile) {
+    const asGhost = true;
+    const options = Object.keys(DIRS).filter((dir) => {
+      if (ghost.dir && dir === OPPOSITE[ghost.dir]) return false; // no reversing
+      return canGo(tile, dir, asGhost);
+    });
+
+    // Dead end: reversing is the only legal move.
+    if (!options.length) {
+      ghost.dir = ghost.dir ? OPPOSITE[ghost.dir] : 'up';
+      return;
+    }
+
+    const target = targetFor(ghost);
+    const frightened = ghost.status === 'fright';
+
+    let best = options[0];
+    let bestScore = frightened ? -Infinity : Infinity;
+
+    for (const dir of options) {
+      const d = DIRS[dir];
+      const nx = wrapX(tile.x + d.x);
+      const ny = tile.y + d.y;
+      const dist = (nx - target.x) ** 2 + (ny - target.y) ** 2;
+      // Frightened ghosts run from the player instead of toward the target.
+      if (frightened ? dist > bestScore : dist < bestScore) {
+        bestScore = dist;
+        best = dir;
       }
     }
-    return next;
+
+    ghost.dir = best;
+  }
+
+  const mode = () => MODES[modeIndex].mode;
+
+  /* ── Lifecycle ────────────────────────────────────────── */
+
+  function placeActors() {
+    pac = { x: spawn.x, y: spawn.y, dir: 'left', nextDir: null, moving: false, mouth: 0 };
+    ghosts = GHOSTS.map((g) => ({
+      ...g,
+      x: g.start.x,
+      y: g.start.y,
+      dir: g.id === 'blinky' ? 'left' : 'up',
+      status: g.home ? 'house' : 'normal',
+      releaseAt: g.release,
+      moving: true,
+    }));
   }
 
   function reset() {
-    player = { ...spawn };
-    fragments = fragmentCells.map((cell) => ({ ...cell, taken: false }));
-    sentries = SENTRY_ROUTES.map((route) => ({ ...route }));
+    pellets = pelletCells.map((c) => ({ ...c, taken: false }));
+    score = 0;
+    lives = 3;
     elapsed = 0;
+    modeIndex = 0;
+    modeTimer = 0;
+    frightTimer = 0;
+    ghostCombo = 0;
+    eatenAt = null;
+    respawning = 0;
     lostReason = '';
-    exitOpen = false;
-    flash = 0;
+    placeActors();
     state = STATES.READY;
   }
 
@@ -124,93 +295,174 @@ export function createGame() {
     state = STATES.PLAYING;
   }
 
-  function pause() {
+  const pause = () => {
     if (state === STATES.PLAYING) state = STATES.PAUSED;
-  }
-
-  function resume() {
+  };
+  const resume = () => {
     if (state === STATES.PAUSED) state = STATES.PLAYING;
+  };
+  const togglePause = () => (state === STATES.PLAYING ? pause() : resume());
+
+  /** Queue a turn. Taken at the next tile centre where it is legal. */
+  function setDirection(dir) {
+    if (!DIRS[dir]) return;
+    // Reversing is always legal mid-corridor, so take it immediately —
+    // waiting for the next centre makes the controls feel sticky.
+    if (pac.dir && dir === OPPOSITE[pac.dir]) {
+      pac.dir = dir;
+      pac.nextDir = null;
+      return;
+    }
+    // Anything else is queued and taken at the next junction that allows it.
+    pac.nextDir = dir;
   }
 
-  function togglePause() {
-    if (state === STATES.PLAYING) pause();
-    else if (state === STATES.PAUSED) resume();
+  function loseLife() {
+    lives -= 1;
+    ghostCombo = 0;
+    frightTimer = 0;
+    if (lives <= 0) {
+      state = STATES.LOST;
+      lostReason = 'The ghosts cornered you. No lives left.';
+      return;
+    }
+    placeActors();
+    respawning = 1.2;
   }
 
-  function distance(a, b) {
-    return Math.hypot(a.x - b.x, a.y - b.y);
-  }
+  /* ── Update ───────────────────────────────────────────── */
 
-  /**
-   * Advance the simulation.
-   * @param {number} dt seconds since the last update, already clamped
-   * @param {{up:boolean,down:boolean,left:boolean,right:boolean}} input
-   */
   function update(dt, input) {
     if (state !== STATES.PLAYING) return;
 
     elapsed += dt;
-    if (flash > 0) flash = Math.max(0, flash - dt * 2.5);
 
-    // ── Player ──
-    let dx = (input.right ? 1 : 0) - (input.left ? 1 : 0);
-    let dy = (input.down ? 1 : 0) - (input.up ? 1 : 0);
-    if (dx && dy) {
-      const inv = Math.SQRT1_2;
-      dx *= inv;
-      dy *= inv;
+    if (eatenAt) {
+      eatenAt.life -= dt;
+      if (eatenAt.life <= 0) eatenAt = null;
     }
 
-    if (dx) player = moveAxis(player, dx * PLAYER_SPEED * dt, 'x');
-    if (dy) player = moveAxis(player, dy * PLAYER_SPEED * dt, 'y');
+    // Brief freeze after a death, so the reset is readable.
+    if (respawning > 0) {
+      respawning -= dt;
+      return;
+    }
 
-    // ── Sentries ──
-    for (const sentry of sentries) {
-      const step = sentry.dir * sentry.speed * dt;
-      const probe = { ...sentry };
-      probe[sentry.axis] += step;
+    // Queued input from the view.
+    if (input?.dir) setDirection(input.dir);
 
-      const cx = Math.floor(probe.x + (sentry.axis === 'x' ? Math.sign(step) * SENTRY_RADIUS : 0));
-      const cy = Math.floor(probe.y + (sentry.axis === 'y' ? Math.sign(step) * SENTRY_RADIUS : 0));
-
-      const beyondBound =
-        (sentry.min !== undefined && probe[sentry.axis] < sentry.min) ||
-        (sentry.max !== undefined && probe[sentry.axis] > sentry.max);
-
-      if (isWall(cx, cy) || beyondBound) sentry.dir *= -1;
-      else sentry[sentry.axis] = probe[sentry.axis];
-
-      if (distance(sentry, player) < SENTRY_RADIUS + PLAYER_RADIUS) {
-        state = STATES.LOST;
-        lostReason = 'A security sweep found you. The session was traced and cut.';
-        flash = 1;
-        return;
+    // Mode cycling pauses while ghosts are frightened.
+    if (frightTimer > 0) {
+      frightTimer -= dt;
+      if (frightTimer <= 0) {
+        frightTimer = 0;
+        ghostCombo = 0;
+        for (const g of ghosts) if (g.status === 'fright') g.status = 'normal';
+      }
+    } else {
+      modeTimer += dt;
+      if (modeTimer >= MODES[modeIndex].time && modeIndex < MODES.length - 1) {
+        modeTimer = 0;
+        modeIndex += 1;
+        // Ghosts reverse when the mode flips.
+        for (const g of ghosts) {
+          if (g.status === 'normal' && g.dir) g.dir = OPPOSITE[g.dir];
+        }
       }
     }
 
-    // ── Fragments ──
-    for (const fragment of fragments) {
-      if (fragment.taken) continue;
-      if (distance(fragment, player) < PICKUP_RADIUS) {
-        fragment.taken = true;
-        flash = 1;
+    /* ── Player ── */
+    advance(pac, SPEED * dt, false, (entity, tile) => {
+      if (entity.nextDir && canGo(tile, entity.nextDir, false)) {
+        entity.dir = entity.nextDir;
+        entity.nextDir = null;
+      }
+    });
+    pac.mouth = (pac.mouth + dt * 9) % (Math.PI * 2);
+
+    /* ── Pellets ── */
+    const pacTile = tileOf(pac);
+    for (const pellet of pellets) {
+      if (pellet.taken) continue;
+      if (pellet.x !== pacTile.x || pellet.y !== pacTile.y) continue;
+      pellet.taken = true;
+      score += pellet.power ? 50 : 10;
+      if (pellet.power) {
+        frightTimer = FRIGHT_TIME;
+        ghostCombo = 0;
+        for (const g of ghosts) {
+          if (g.status === 'normal') {
+            g.status = 'fright';
+            if (g.dir) g.dir = OPPOSITE[g.dir];
+          }
+        }
       }
     }
 
-    exitOpen = fragments.every((f) => f.taken);
-
-    // ── Exit ──
-    if (exitOpen) {
-      const inExit =
-        Math.floor(player.x) === exitCell.x && Math.floor(player.y) === exitCell.y;
-      if (inExit) state = STATES.WON;
+    if (pellets.every((p) => p.taken)) {
+      // Clearing the maze is the win condition; time survives into the score.
+      score += lives * 500;
+      state = STATES.WON;
+      return;
     }
-  }
 
-  function score() {
-    const collected = fragments.filter((f) => f.taken).length;
-    // Fragments are the bulk of it; speed is the bonus, floored at zero.
-    return collected * 250 + Math.max(0, Math.round((90 - elapsed) * 10));
+    /* ── Ghosts ── */
+    for (const ghost of ghosts) {
+      if (ghost.status === 'house') {
+        ghost.releaseAt -= dt;
+        if (ghost.releaseAt > 0) {
+          // Bob gently in place until released.
+          ghost.y += Math.sin(elapsed * 4) * dt * 0.6;
+          continue;
+        }
+        // Drift to the door, then step out into the maze.
+        const dx = HOUSE_EXIT.x - ghost.x;
+        const dy = HOUSE_EXIT.y - ghost.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 0.08) {
+          ghost.x = HOUSE_EXIT.x;
+          ghost.y = HOUSE_EXIT.y;
+          ghost.status = frightTimer > 0 ? 'fright' : 'normal';
+          ghost.dir = Math.random() < 0.5 ? 'left' : 'right';
+        } else {
+          const stepLen = Math.min(GHOST_SPEED * dt, dist);
+          ghost.x += (dx / dist) * stepLen;
+          ghost.y += (dy / dist) * stepLen;
+        }
+        continue;
+      }
+
+      const speed =
+        ghost.status === 'eyes' ? EYES_SPEED : ghost.status === 'fright' ? FRIGHT_SPEED : GHOST_SPEED;
+
+      advance(ghost, speed * dt, true, chooseGhostDir);
+
+      // Eyes reaching the door drop back into the house and re-enter play.
+      if (ghost.status === 'eyes') {
+        const t = tileOf(ghost);
+        if (t.x === DOOR.x && t.y === DOOR.y) {
+          ghost.status = 'house';
+          ghost.releaseAt = 1.5;
+          ghost.x = 9.5;
+          ghost.y = 10.5;
+          continue;
+        }
+      }
+
+      /* ── Collision ── */
+      if (Math.hypot(ghost.x - pac.x, ghost.y - pac.y) < 0.68) {
+        if (ghost.status === 'fright') {
+          ghostCombo += 1;
+          const points = 200 * 2 ** (ghostCombo - 1);
+          score += points;
+          eatenAt = { x: ghost.x, y: ghost.y, points, life: 1 };
+          ghost.status = 'eyes';
+        } else if (ghost.status === 'normal') {
+          loseLife();
+          return;
+        }
+      }
+    }
   }
 
   reset();
@@ -223,28 +475,34 @@ export function createGame() {
     resume,
     togglePause,
     reset,
-    isWall,
+    setDirection,
+    isWall: (x, y) => blocked(x, y, false),
     get state() {
       return state;
     },
     snapshot() {
+      const total = pellets.length;
+      const eaten = pellets.filter((p) => p.taken).length;
       return {
         state,
-        player,
-        fragments,
-        sentries,
-        exitCell,
-        exitOpen,
-        elapsed,
-        lostReason,
-        flash,
-        collected: fragments.filter((f) => f.taken).length,
-        total: fragments.length,
-        score: score(),
+        pac,
+        ghosts,
+        pellets,
+        walls,
+        doors,
         rows,
         cols,
-        walls,
-        radii: { player: PLAYER_RADIUS, sentry: SENTRY_RADIUS },
+        score,
+        lives,
+        elapsed,
+        eaten,
+        total,
+        mode: mode(),
+        frightened: frightTimer > 0,
+        frightEnding: frightTimer > 0 && frightTimer < 2,
+        respawning: respawning > 0,
+        eatenAt,
+        lostReason,
       };
     },
   };

@@ -6,7 +6,7 @@ build step, no bundler, nothing to install.
 Two things in here are more than a page: an interactive walkthrough of the
 [AgentBridge](https://github.com/A-Pravin02/Agentbridge) authorization pipeline and of the
 [PRAXIS](https://github.com/A-Pravin02/praxis-neurosymbolic) reasoning architecture. There is also a
-simulated terminal and a playable game, **System Override** — both opened from labelled buttons in
+simulated terminal and a playable game, **Maze Override** — both opened from labelled buttons in
 the top bar and in the footer.
 
 ## Run it locally
@@ -68,7 +68,7 @@ and add `credential` when you have a URL to point at.
 | `Esc` | Close any overlay; pauses a live game run instead of closing it |
 | `↑` `↓` in the terminal | Command history |
 | `Tab` in the terminal | Complete a command |
-| `WASD` / arrows | Move in System Override — `R` restarts |
+| `WASD` / arrows | Move in Maze Override — `R` restarts, `Esc` pauses |
 
 ## Accessibility and motion
 
@@ -107,7 +107,7 @@ assets/js/
   terminal.js           terminal commands
   palette.js            command palette
   interactions.js       cursor, parallax, reveals, chrome
-  game/engine.js        game logic — pure, no DOM
+  game/engine.js        maze, pellets, ghost AI — pure, no DOM
   game/view.js          canvas rendering, input, lifecycle
 ```
 

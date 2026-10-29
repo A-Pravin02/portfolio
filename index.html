@@ -109,7 +109,7 @@
       <a href="#contact">Contact</a>
       <a href="#" data-open="palette">Search</a>
       <a href="#" data-open="terminal">Terminal</a>
-      <a href="#" data-open="game">Play System Override</a>
+      <a href="#" data-open="game">Play Maze Override</a>
     </nav>
 
     <main id="main">
@@ -237,7 +237,7 @@
       <p class="mono">Pravin Anbalagan · Built from scratch · <span id="year">2026</span></p>
       <div class="footer__actions">
         <button class="btn btn--ghost" data-open="terminal" data-cursor="terminal">Open terminal</button>
-        <button class="btn btn--ghost" data-open="game" data-cursor="play">Play System Override</button>
+        <button class="btn btn--ghost" data-open="game" data-cursor="play">Play Maze Override</button>
       </div>
     </footer>
 
@@ -337,9 +337,10 @@
     <dialog id="game" aria-labelledby="game-title">
       <div class="game">
         <div class="game__hud">
-          <span id="game-title">System Override</span>
-          <span>Fragments <b id="hud-frag">0/0</b></span>
-          <span>Time <b id="hud-time">0.0s</b></span>
+          <span id="game-title">Maze Override</span>
+          <span>Score <b id="hud-score">0</b></span>
+          <span>Pellets <b id="hud-pellets">0/0</b></span>
+          <span>Lives <b id="hud-lives" class="game__lives">●●●</b></span>
           <span class="spacer"></span>
           <button class="icon-btn" id="game-pause" aria-label="Pause game">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -355,18 +356,19 @@
         </div>
 
         <div class="game__stage">
-          <canvas class="game__canvas" id="game-canvas" width="560" height="560" role="img" aria-label="System Override play area"></canvas>
+          <canvas class="game__canvas" id="game-canvas" width="532" height="588" role="img" aria-label="Maze Override play area"></canvas>
 
           <div class="game__screen" id="screen-ready">
-            <p class="mono">Mission brief</p>
-            <h3>System Override</h3>
+            <p class="mono">How it works</p>
+            <h3>Maze Override</h3>
             <p>
-              You are an autonomous agent inside a restricted environment. Collect every data fragment,
-              keep clear of the security sweeps, then reach the exit before the sweeps find you.
+              Clear every pellet without getting caught. The four ghosts each hunt differently — one
+              tails you, one cuts ahead, one flanks, one loses its nerve up close. Eat a big pellet and
+              for seven seconds you can eat them instead.
             </p>
             <div class="game__keys">
               <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows — move</span>
-              <span><kbd>Esc</kbd> pause · <kbd>R</kbd> restart</span>
+              <span><kbd>Esc</kbd> pause · <kbd>R</kbd> restart · 3 lives</span>
             </div>
             <div class="game__actions">
               <button class="btn btn--primary" id="game-start" data-magnetic>Start run</button>
@@ -383,7 +385,7 @@
           </div>
 
           <div class="game__screen game__screen--won" id="screen-won" hidden>
-            <p class="mono">Override complete</p>
+            <p class="mono">Maze cleared</p>
             <h3>ACCESS GRANTED</h3>
             <p>
               You found the hidden layer. Good engineering is not only about making systems work — it’s
@@ -398,9 +400,9 @@
           </div>
 
           <div class="game__screen game__screen--lost" id="screen-lost" hidden>
-            <p class="mono">Trace detected</p>
-            <h3>CONNECTION SEVERED</h3>
-            <p id="lost-reason">A security sweep found you.</p>
+            <p class="mono">Caught</p>
+            <h3>GAME OVER</h3>
+            <p id="lost-reason">The ghosts cornered you.</p>
             <div class="game__actions">
               <button class="btn btn--primary" id="lost-again">Try again</button>
               <button class="btn btn--ghost" data-close>Leave</button>

@@ -52,7 +52,7 @@ export function renderAbout() {
         <figcaption class="about__meta">
           <strong>${education.degree}</strong>
           <span>${education.institution}</span>
-          <span class="mono" style="text-transform: none">${education.period} · ${education.detail}</span>
+          <span class="mono" style="text-transform: none">${[education.period, education.detail].filter(Boolean).join(' · ')}</span>
         </figcaption>
       </figure>
     </div>
