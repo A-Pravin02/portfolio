@@ -1,45 +1,30 @@
 /* ─────────────────────────────────────────────────────────────
    PROFILE — single source of truth for identity + contact.
    Edit values here; the UI reads them and hides anything empty.
+
+   Copy here is deliberately short. The homepage is meant to be
+   understood in well under a minute, so nothing on it runs past two
+   sentences — detail belongs in the project case studies.
    ───────────────────────────────────────────────────────────── */
 
 export const profile = {
   name: 'Pravin Anbalagan',
   shortName: 'Pravin',
-  role: 'CSBS undergraduate · AI systems',
+  role: 'AI Engineer · Developer · Research Enthusiast',
   location: 'Vellore, India',
-  timeZone: 'Asia/Kolkata',
 
   // Hero copy
-  label: 'Engineering / AI systems / Research',
-  headline: 'I like understanding what happens beneath the surface.',
+  headline: 'I build intelligent systems and software that solve real problems.',
   intro:
-    'I’m Pravin Anbalagan, a Computer Science and Business Systems student at VIT Vellore. I build ' +
-    'software, explore intelligent systems, and investigate what happens when models reason, systems ' +
-    'fail, or autonomous agents take action.',
+    'Computer Science and Business Systems at VIT Vellore. I work on AI agent security, ' +
+    'neuro-symbolic reasoning, and the backend systems underneath them.',
 
-  // One line on what I'm actually doing now. Leave null to hide it.
-  currentFocus: 'Currently building AgentBridge — an authorization layer for AI agents.',
-
+  // Two sentences, no more. Shown under "Beyond the code."
   about: [
-    'I study Computer Science and Business Systems at VIT Vellore. Most of what I build starts with ' +
-      'the same question — how does this actually work underneath? — and ends with a prototype that ' +
-      'lets me check the answer.',
-    'That has taken me through a transformer written from scratch so I could see attention compute, a ' +
-      '3D face reconstruction pipeline where I had to debug surface normals by hand, and an ' +
-      'authorization layer that decides whether an AI agent is allowed to spend money. The subjects ' +
-      'differ; the method does not.',
-    'Right now I spend most of my time on neuro-symbolic reasoning and on the security problems that ' +
-      'appear once agents start acting on their own.',
-  ],
-
-  interests: [
-    { title: 'AI and machine learning', note: 'Transformers from first principles, training dynamics, evaluation.' },
-    { title: 'Neuro-symbolic systems', note: 'Rule engines that verify what a language model claims.' },
-    { title: 'AI-agent security', note: 'Identity, policy, budgets, and audit trails for autonomous agents.' },
-    { title: 'Software engineering', note: 'Typed boundaries, deterministic cores, tests that mean something.' },
-    { title: 'Quantitative finance', note: 'Market structure and systematic strategy as an engineering problem.' },
-    { title: 'Data science', note: 'NLP pipelines, topic modelling, turning noisy text into decisions.' },
+    'I’m a Computer Science and Business Systems student at VIT Vellore, interested in building ' +
+      'intelligent systems at the intersection of AI, software engineering and applied research.',
+    'I enjoy understanding how systems work beneath the surface, experimenting with ideas and turning ' +
+      'them into practical implementations.',
   ],
 
   education: {
@@ -61,10 +46,8 @@ export const profile = {
   },
 
   contact: {
-    headline: 'Have an interesting problem? Let’s build something.',
-    body:
-      'Research ideas, agent security, or anything that needs a prototype before it needs a plan — ' +
-      'email is the fastest way to reach me.',
+    headline: 'Have something interesting in mind?',
+    body: 'Let’s build something meaningful.',
   },
 
   /* Portrait. To swap it, drop a square image in assets/img/ and point
@@ -73,6 +56,5 @@ export const profile = {
   photo: {
     src: 'assets/img/pravin-560.webp',
     alt: 'Pravin Anbalagan',
-    caption: 'Pravin Anbalagan · VIT Vellore',
   },
 };

@@ -83,7 +83,7 @@ export function initChrome() {
   });
 
   // Active section in the nav.
-  const sections = ['#about', '#projects', '#achievements', '#skills', '#playground', '#contact']
+  const sections = ['#top', '#work', '#about', '#playground', '#contact']
     .map((id) => document.querySelector(id))
     .filter(Boolean);
 

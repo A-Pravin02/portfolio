@@ -251,23 +251,27 @@
   }
 }
 
-.hero__label {
-  color: var(--ink-3);
-}
-
 .hero__name {
-  margin-top: var(--s-3);
   font-family: var(--display);
   font-size: var(--t-h3);
   color: var(--ink);
   letter-spacing: -0.01em;
 }
 
+.hero__label {
+  margin-top: var(--s-2);
+  color: var(--ink-3);
+}
+
 /* ── Portrait ──────────────────────────────────────────────
-   A plain frame. No halo, no ring, no glow. */
+   Masked into the page, not framed by it. One radial gradient fades
+   the bottom and outer edges together, so no mask-composite is
+   needed and support stays wide. Masks are progressive enhancement:
+   without them the photo simply has square edges. */
 .hero__portrait {
+  position: relative;
   margin: 0;
-  max-width: 420px;
+  max-width: 440px;
   width: 100%;
 }
 
@@ -275,6 +279,9 @@
   .hero__portrait {
     max-width: none;
     justify-self: end;
+    margin-block: calc(var(--s-5) * -1);
+    /* Let the photo bleed toward the page edge instead of sitting in a box. */
+    margin-right: calc(var(--gutter) * -0.5);
   }
 }
 
@@ -282,15 +289,39 @@
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
-  object-position: center 18%;
-  border: 1px solid var(--line-2);
-  border-radius: 3px;
-  background: var(--surface);
+  object-position: center 16%;
+
+  /* Gentle correction only — the photo's own lighting is cool, and the
+     page is near-black. Heavy filters would wreck the skin tones. */
+  filter: saturate(0.9) contrast(1.04) brightness(0.98);
+
+  /* Mobile: fade the bottom into the page, leave the sides alone so the
+     subject is never clipped at narrow widths. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 98%);
+  mask-image: linear-gradient(to bottom, #000 58%, transparent 98%);
 }
 
-.hero__portrait figcaption {
-  margin-top: var(--s-3);
-  color: var(--ink-3);
+@media (min-width: 980px) {
+  .hero__portrait img {
+    --fade-y: linear-gradient(to bottom, transparent 0%, #000 13%, #000 52%, transparent 99%);
+    --fade-x: linear-gradient(to right, transparent 0%, #000 24%, #000 86%, transparent 100%);
+
+    -webkit-mask-image: var(--fade-y), var(--fade-x);
+    -webkit-mask-composite: source-in; /* WebKit's spelling of intersect */
+    mask-image: var(--fade-y), var(--fade-x);
+    mask-composite: intersect;
+  }
+}
+
+/* A scrim in the page colour, so the bottom of the frame resolves into
+   the background rather than stopping at an edge. */
+.hero__portrait::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: 42%;
+  pointer-events: none;
+  background: linear-gradient(to top, var(--bg) 4%, transparent 92%);
 }
 
 /* ── Copy ──────────────────────────────────────────────────── */
@@ -311,13 +342,27 @@
   margin-top: var(--s-6);
 }
 
-.hero__focus {
-  margin-top: var(--s-5);
+/* Secondary links under the two primary actions. */
+.hero__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5);
+  margin-top: var(--s-6);
   padding-top: var(--s-4);
   border-top: 1px solid var(--line);
+}
+
+.hero__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   font-size: var(--t-sm);
   color: var(--ink-2);
-  max-width: 48ch;
+  transition: color var(--fast) var(--ease);
+}
+
+.hero__links a:hover {
+  color: var(--violet);
 }
 
 /* ═══ ABOUT ════════════════════════════════════════════════ */
@@ -861,4 +906,341 @@ a.skill:hover .skill__ev {
   margin-top: var(--s-3);
   color: var(--ink-3);
   text-align: center;
+}
+
+/* ═══ PROJECT CARDS ════════════════════════════════════════
+   The lead card spans the row; the others sit beside it. A single
+   full-size button covers each card so the whole thing is one
+   target, with the real links layered above it. */
+.cards {
+  display: grid;
+  gap: var(--s-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 860px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card--lead {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .card--lead .card__visual {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 300px;
+  }
+}
+
+.card {
+  position: relative;
+  display: grid;
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface);
+  overflow: clip;
+  transition:
+    border-color var(--mid) var(--ease),
+    background-color var(--mid) var(--ease);
+}
+
+.card:hover,
+.card:focus-within {
+  border-color: var(--line-3);
+  background: var(--surface-2);
+}
+
+/* The hit area. Sits under the body content, above the visual. */
+.card__hit {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.card__hit:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: -3px;
+}
+
+.card__visual {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: clip;
+  background: #101012;
+  border-bottom: 1px solid var(--line);
+}
+
+.card--lead .card__visual {
+  border-bottom: none;
+}
+
+@media (min-width: 860px) {
+  .card--lead .card__visual {
+    border-right: 1px solid var(--line);
+  }
+}
+
+.card__visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.85) contrast(1.02);
+  transition:
+    scale var(--slow) var(--ease),
+    filter var(--slow) var(--ease);
+}
+
+.card:hover .card__visual img {
+  filter: saturate(1) contrast(1);
+  @media (prefers-reduced-motion: no-preference) {
+    scale: 1.03;
+  }
+}
+
+/* Architecture stages, for the projects with no screenshot. */
+.card__flow {
+  display: grid;
+  align-content: center;
+  gap: var(--s-2);
+  height: 100%;
+  padding: var(--s-5);
+  counter-reset: stage;
+}
+
+.card__flow li {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: var(--s-3);
+  align-items: baseline;
+  padding-block: 0.3rem;
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.card__flow li:last-child {
+  border-bottom: none;
+}
+
+.card__flow .mono {
+  color: var(--violet-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card__body {
+  display: grid;
+  align-content: start;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Only the real links inside the body take the pointer back. */
+.card__body a {
+  pointer-events: auto;
+}
+
+.card__index {
+  color: var(--ink-3);
+}
+
+.card__title {
+  font-size: var(--t-h3);
+}
+
+.card--lead .card__title {
+  font-size: var(--t-h2);
+}
+
+.card__desc {
+  color: var(--ink-2);
+  font-size: var(--t-sm);
+  max-width: 44ch;
+}
+
+.card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+  margin-top: var(--s-2);
+}
+
+.card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--t-sm);
+  font-weight: 500;
+  color: var(--violet);
+}
+
+.card__link {
+  font-size: var(--t-sm);
+  color: var(--ink-3);
+  border-bottom: 1px solid transparent;
+  transition:
+    color var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
+}
+
+.card__link:hover {
+  color: var(--ink);
+  border-bottom-color: var(--line-3);
+}
+
+.cards__more {
+  margin-top: var(--s-5);
+  color: var(--ink-3);
+  font-size: var(--t-sm);
+}
+
+/* A button that reads as a link, for the archive projects. */
+.linkish {
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--line-2);
+  transition:
+    color var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
+}
+
+.linkish:hover {
+  color: var(--violet);
+  border-bottom-color: var(--violet);
+}
+
+/* ═══ ABOUT (compact) ══════════════════════════════════════ */
+.about__lede .lead + .lead {
+  margin-top: var(--s-4);
+}
+
+.about__edu {
+  display: grid;
+  gap: var(--s-1);
+  margin-top: var(--s-6);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--line);
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+  max-width: 48ch;
+}
+
+.about__edu-when {
+  color: var(--ink-3);
+}
+
+.about__cols {
+  display: grid;
+  gap: var(--s-7);
+  margin-top: var(--s-8);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 900px) {
+  .about__cols {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-8);
+  }
+}
+
+.about__block h3 {
+  font-size: var(--t-h3);
+  margin-bottom: var(--s-5);
+}
+
+.stack {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+
+.stack > div {
+  display: grid;
+  gap: var(--s-1) var(--s-5);
+  padding-block: var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+
+@media (min-width: 560px) {
+  .stack > div {
+    grid-template-columns: 7rem minmax(0, 1fr);
+    align-items: baseline;
+  }
+}
+
+.stack dt {
+  color: var(--ink-3);
+}
+
+.stack dd {
+  margin: 0;
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+}
+
+.record {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.record li {
+  display: grid;
+  gap: var(--s-1) var(--s-5);
+  padding-block: var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+
+@media (min-width: 560px) {
+  .record li {
+    grid-template-columns: 7rem minmax(0, 1fr);
+    align-items: baseline;
+  }
+}
+
+.record__when {
+  color: var(--ink-3);
+}
+
+.record__what {
+  display: grid;
+  gap: 0.15rem;
+  font-size: var(--t-sm);
+  color: var(--ink);
+}
+
+.record__what a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-2);
+  justify-self: start;
+  transition:
+    color var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
+}
+
+.record__what a:hover {
+  color: var(--violet);
+  border-bottom-color: var(--violet);
+}
+
+.record__org {
+  color: var(--ink-3);
 }

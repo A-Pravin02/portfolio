@@ -3,21 +3,30 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pravin Anbalagan — Building intelligent systems</title>
+    <title>Pravin Anbalagan — AI Engineer &amp; Developer</title>
     <meta
       name="description"
-      content="Pravin Anbalagan — Computer Science and Business Systems student at VIT Vellore working on neuro-symbolic AI, AI-agent security, and software engineering."
+      content="I build intelligent systems and software that solve real problems. AI agent security, neuro-symbolic reasoning and backend engineering — by a CSBS student at VIT Vellore."
     />
+    <meta name="author" content="Pravin Anbalagan" />
     <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#08090d" />
+    <meta name="theme-color" content="#0c0c0d" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Pravin Anbalagan — Building intelligent systems" />
+    <meta property="og:title" content="Pravin Anbalagan — AI Engineer &amp; Developer" />
     <meta
       property="og:description"
-      content="AI systems, neuro-symbolic reasoning, and agent security. Projects, research, and a terminal you can type into."
+      content="I build intelligent systems and software that solve real problems. AgentBridge, PRAXIS and more."
     />
+    <meta property="og:image" content="assets/img/pravin-1120.webp" />
+    <meta property="og:image:alt" content="Pravin Anbalagan" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pravin Anbalagan — AI Engineer &amp; Developer" />
+    <meta
+      name="twitter:description"
+      content="I build intelligent systems and software that solve real problems."
+    />
+    <meta name="twitter:image" content="assets/img/pravin-1120.webp" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -47,10 +56,9 @@
       <a class="topbar__name" href="#top">Pravin Anbalagan</a>
 
       <nav class="topnav" id="topnav" aria-label="Sections">
+        <a href="#top">Home</a>
+        <a href="#work">Work</a>
         <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#achievements">Achievements</a>
-        <a href="#skills">Skills</a>
         <a href="#playground">Playground</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -81,6 +89,18 @@
           <span>Play</span>
         </button>
 
+        <a
+          class="btn btn--ghost topbar__feature"
+          href="assets/docs/Pravin-Anbalagan-Resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16" />
+          </svg>
+          <span>Résumé</span>
+        </a>
+
         <button class="icon-btn topbar__burger" id="drawer-open" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
             <path d="M3 7h18M3 12h18M3 17h18" />
@@ -96,13 +116,12 @@
           <path d="m6 6 12 12M18 6 6 18" />
         </svg>
       </button>
+      <a href="#top">Home</a>
+      <a href="#work">Work</a>
       <a href="#about">About</a>
-      <a href="#projects">Projects</a>
-      <a href="#achievements">Achievements</a>
-      <a href="#skills">Skills</a>
-        <a href="#playground">Playground</a>
+      <a href="#playground">Playground</a>
       <a href="#contact">Contact</a>
-      <a href="#" data-open="palette">Search</a>
+      <a href="assets/docs/Pravin-Anbalagan-Resume.pdf" target="_blank" rel="noopener noreferrer">Résumé</a>
       <a href="#" data-open="terminal">Terminal</a>
       <a href="#" data-open="game">Play Maze Override</a>
     </nav>
@@ -115,108 +134,94 @@
       <section class="hero" id="top">
         <div class="hero__grid">
           <div class="hero__ident">
-            <p class="mono hero__label">Engineering / AI systems / Research</p>
             <p class="hero__name">Pravin Anbalagan</p>
+            <p class="mono hero__label">AI Engineer · Developer · Research Enthusiast</p>
           </div>
 
-          <figure class="hero__portrait">
+          <!-- The portrait is masked into the page rather than framed:
+               no border, no card, edges faded with a radial mask. -->
+          <div class="hero__portrait">
             <img
               src="assets/img/pravin-560.webp"
               srcset="assets/img/pravin-560.webp 560w, assets/img/pravin-1120.webp 1120w"
-              sizes="(min-width: 980px) 38vw, (min-width: 640px) 420px, 76vw"
+              sizes="(min-width: 980px) 42vw, (min-width: 640px) 440px, 84vw"
               alt="Pravin Anbalagan"
               width="560"
               height="560"
               fetchpriority="high"
               decoding="async"
             />
-            <figcaption class="mono">Pravin Anbalagan · VIT Vellore</figcaption>
-          </figure>
+          </div>
 
           <div class="hero__copy">
-            <h1 id="hero-headline">I like understanding what happens beneath the surface.</h1>
+            <h1 id="hero-headline">I build intelligent systems and software that solve real problems.</h1>
 
             <p class="lead hero__intro" id="hero-intro">
-              I’m Pravin Anbalagan, a Computer Science and Business Systems student at VIT Vellore. I
-              build software, explore intelligent systems, and investigate what happens when models
-              reason, systems fail, or autonomous agents take action.
+              Computer Science and Business Systems at VIT Vellore. I work on AI agent security,
+              neuro-symbolic reasoning, and the backend systems underneath them.
             </p>
 
             <div class="hero__actions">
-              <a class="btn btn--primary" href="#projects">Explore my work</a>
-              <a class="btn" href="#contact">Get in touch</a>
+              <a class="btn btn--primary" href="#work">Explore projects</a>
+              <a
+                class="btn"
+                href="assets/docs/Pravin-Anbalagan-Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Download résumé</a
+              >
             </div>
 
-            <p class="hero__focus" id="hero-focus">
-              Currently building AgentBridge — an authorization layer for AI agents.
-            </p>
+            <ul class="hero__links" id="hero-links"></ul>
           </div>
         </div>
+      </section>
+
+
+      <!-- ══ WORK ══════════════════════════════════════════
+           Homepage shows compact cards only. Everything detailed —
+           architecture, decisions, limitations, the interactive
+           demos — lives in the case study behind each card. -->
+      <section class="section" id="work" aria-labelledby="work-h">
+        <div class="section__head">
+          <p class="mono section__index">01 — Work</p>
+          <h2 id="work-h">Things I’ve built.</h2>
+        </div>
+        <div id="projects-body"></div>
       </section>
 
       <!-- ══ ABOUT ═════════════════════════════════════════ -->
       <section class="section" id="about" aria-labelledby="about-h">
         <div class="section__head">
-          <p class="mono section__index">01 — About</p>
-          <h2 id="about-h">The person behind the systems</h2>
+          <p class="mono section__index">02 — About</p>
+          <h2 id="about-h">Beyond the code.</h2>
         </div>
         <div id="about-body"></div>
-      </section>
-
-      <!-- ══ PROJECTS ══════════════════════════════════════ -->
-      <section class="section" id="projects" aria-labelledby="projects-h">
-        <div class="section__head">
-          <p class="mono section__index">02 — Projects</p>
-          <h2 id="projects-h">Things I built to find out how they work</h2>
-        </div>
-        <div id="projects-body"></div>
-      </section>
-
-      <!-- ══ ACHIEVEMENTS ══════════════════════════════════ -->
-      <section class="section" id="achievements" aria-labelledby="ach-h">
-        <div class="section__head">
-          <p class="mono section__index">03 — Record</p>
-          <h2 id="ach-h">What is verifiable</h2>
-        </div>
-        <div id="achievements-body"></div>
-      </section>
-
-      <!-- ══ SKILLS ════════════════════════════════════════ -->
-      <section class="section" id="skills" aria-labelledby="skills-h">
-        <div class="section__head">
-          <p class="mono section__index">04 — Stack</p>
-          <h2 id="skills-h">Tools, and where I have used them</h2>
-        </div>
-        <div id="skills-body"></div>
       </section>
 
       <!-- ══ PLAYGROUND ════════════════════════════════════ -->
       <section class="section" id="playground" aria-labelledby="play-h">
         <div class="section__head">
-          <p class="mono section__index">05 — Playground</p>
-          <h2 id="play-h">Something to click rather than read</h2>
+          <p class="mono section__index">03 — Playground</p>
+          <h2 id="play-h">Something to click rather than read.</h2>
         </div>
 
         <div class="playground">
           <div class="playground__copy reveal">
             <p class="prose">
-              A maze chase, written from scratch — grid-locked movement, collision against the maze,
-              and four ghosts that each hunt differently. One tails your tile, one aims four tiles
-              ahead to cut you off, one flanks using a vector off the first, and one gives up and
-              retreats when it gets close. The whole thing is about a page of game logic with no
-              engine and no dependencies.
+              A maze chase written from scratch — no engine, no dependencies. Four ghosts that each
+              hunt differently, and a terminal that answers real questions about this portfolio.
             </p>
 
             <dl class="playground__facts">
-              <div><dt class="mono">Goal</dt><dd>Clear all 159 pellets</dd></div>
+              <div><dt class="mono">Game</dt><dd>Clear 159 pellets, three lives, about a minute a run</dd></div>
               <div><dt class="mono">Controls</dt><dd><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows · swipe on touch</dd></div>
-              <div><dt class="mono">Lives</dt><dd>Three. Eat a big pellet and the ghosts are edible for seven seconds.</dd></div>
-              <div><dt class="mono">A run</dt><dd>About a minute</dd></div>
+              <div><dt class="mono">Terminal</dt><dd>Try <code>projects</code>, <code>agentbridge</code> or <code>help</code></dd></div>
             </dl>
 
             <div class="hero__actions">
-              <button class="btn btn--accent" data-open="game">Play now</button>
-              <a class="btn btn--ghost" href="https://github.com/A-Pravin02" target="_blank" rel="noopener noreferrer">See the code</a>
+              <button class="btn btn--accent" data-open="game">Play Maze Override</button>
+              <button class="btn" data-open="terminal">Explore terminal</button>
             </div>
           </div>
 
@@ -230,7 +235,7 @@
       <!-- ══ CONTACT ═══════════════════════════════════════ -->
       <section class="section contact" id="contact" aria-labelledby="contact-h">
         <div class="section__head">
-          <p class="mono section__index">06 — Contact</p>
+          <p class="mono section__index">04 — Contact</p>
         </div>
         <div id="contact-body"></div>
       </section>

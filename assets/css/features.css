@@ -1021,3 +1021,13 @@ kbd {
   color: var(--ink-2);
   background: rgba(245, 245, 247, 0.03);
 }
+
+/* Wide block inside a case study — used by the embedded demos, which
+   need the full dialog width rather than the label/body split. */
+.detail__block--wide {
+  display: block;
+}
+
+.detail__block--wide h4 {
+  margin-bottom: var(--s-4);
+}

@@ -4,7 +4,7 @@
    ───────────────────────────────────────────────────────────── */
 
 import { $, h, raw } from './utils.js';
-import { projects, featuredProjects, getProject } from './data/projects.js';
+import { projects, featuredProjects, archiveProjects, getProject } from './data/projects.js';
 import { mountPipeline } from './agentbridge.js';
 import { mountReasoning } from './praxis.js';
 
@@ -13,86 +13,89 @@ const ARROW = raw(
 );
 
 export function renderProjects() {
-  // Every project gets the same editorial spread. The two with demos get an
-  // interactive panel in the visual slot; the rest get their screenshot
-  // there — but the same heading, summary, tech and actions.
-  $('#projects-body').innerHTML = h`${projects.map((project) => spread(project))}`.toString();
+  // The homepage carries cards only. The case study behind each card holds
+  // the architecture, the decisions, the limitations and — for the two
+  // that have one — the interactive demo.
+  $('#projects-body').innerHTML = h`
+    <div class="cards">
+      ${featuredProjects.map((project, i) => card(project, i))}
+    </div>
 
-  // Mount the interactive demos into their placeholders.
-  for (const project of featuredProjects) {
-    const host = document.getElementById(`demo-${project.id}`);
-    if (!host) continue;
-    if (project.demo === 'pipeline') mountPipeline(host, project);
-    if (project.demo === 'reasoning') mountReasoning(host, project);
-  }
+    ${
+      archiveProjects.length
+        ? h`<p class="cards__more reveal">
+              Also built —
+              ${archiveProjects.map(
+                (project, i) =>
+                  h`${raw(i ? ', ' : ' ')}<button class="linkish" data-project="${project.id}">${project.title}</button>`,
+              )}.
+            </p>`
+        : ''
+    }
+  `.toString();
 
   wireDetailDialog();
 }
 
-/* ══ FEATURED SPREAD ═══════════════════════════════════════ */
+/* ══ PROJECT CARD ══════════════════════════════════════════
+   The first card is wide and leads the section; the rest sit beside
+   it. Same parts throughout, different weight. */
 
-function spread(project) {
+function card(project, index) {
+  const lead = index === 0;
+
   return h`
-    <article class="spread" id="project-${project.id}">
-      <div class="spread__head reveal">
-        <div>
-          <p class="mono">${project.category}</p>
-          <h3 class="spread__title">${project.title}</h3>
-          <p class="spread__question">${project.question || project.tagline}</p>
-        </div>
+    <article class="card ${lead ? 'card--lead' : ''} reveal" id="project-${project.id}">
+      <button class="card__hit" data-project="${project.id}" aria-labelledby="card-h-${project.id}">
+        <span class="visually-hidden">View case study: ${project.title}</span>
+      </button>
 
-        <div>
-          <p class="prose">${project.summary}</p>
-          ${project.note ? h`<p class="mono" style="margin-top: var(--s-3); text-transform: none">${project.note}</p>` : ''}
-          <div class="spread__meta">
-            ${project.tech.map((t) => h`<span class="tag">${t}</span>`)}
-          </div>
-          <div class="spread__actions">
-            <button class="btn btn--accent" data-project="${project.id}">
-              Read the write-up
-            </button>
-            ${sourceLink(project)}
-            ${demoLink(project)}
-          </div>
-          <p class="mono" style="margin-top: var(--s-4); text-transform: none">Status — ${project.status}</p>
+      <div class="card__visual">${cardVisual(project)}</div>
+
+      <div class="card__body">
+        <p class="mono card__index">Project ${String(index + 1).padStart(2, '0')}</p>
+        <h3 class="card__title" id="card-h-${project.id}">${project.title}</h3>
+        <p class="card__desc">${project.cardLine || project.question}</p>
+
+        <ul class="card__tags">
+          ${project.tech.slice(0, 4).map((t) => h`<li class="tag">${t}</li>`)}
+        </ul>
+
+        <div class="card__actions">
+          <span class="card__cta">View project ${ARROW}</span>
+          ${project.links?.source ? h`<a class="card__link" href="${project.links.source}" target="_blank" rel="noopener noreferrer">GitHub</a>` : ''}
+          ${project.links?.demo ? h`<a class="card__link" href="${project.links.demo}" target="_blank" rel="noopener noreferrer">Live demo</a>` : ''}
         </div>
       </div>
-
-      ${project.demo ? h`<div id="demo-${project.id}" class="reveal"></div>` : visual(project)}
     </article>
   `;
 }
 
-/* The visual slot for a project without an interactive demo. */
-function visual(project) {
-  if (!project.image) {
-    return project.pipeline
-      ? h`<ul class="flow reveal" style="margin-top: var(--s-5)">
-            ${project.pipeline.map((stage) => h`<li>${stage.label}</li>`)}
-          </ul>`
-      : '';
+/* A screenshot where one exists, otherwise the project's own pipeline
+   rendered as a diagram — never a fabricated product shot. */
+function cardVisual(project) {
+  if (project.image) {
+    return h`<img
+      src="${project.image.src}"
+      alt="${project.image.alt}"
+      width="1024"
+      height="1024"
+      loading="lazy"
+      decoding="async"
+    />`;
   }
 
-  return h`
-    <figure class="spread__visual reveal">
-      <img
-        src="${project.image.src}"
-        alt="${project.image.alt}"
-        width="1024"
-        height="1024"
-        loading="lazy"
-        decoding="async"
-      />
-      ${
-        project.pipeline
-          ? h`<figcaption>
-                <ul class="flow" style="margin: 0">
-                  ${project.pipeline.map((stage) => h`<li>${stage.label}</li>`)}
-                </ul>
-              </figcaption>`
-          : ''
-      }
-    </figure>`;
+  const stages = project.pipeline || project.nodes;
+  if (!stages) return '';
+
+  // Labels only at card size — the code identifiers were being truncated,
+  // and they belong with the stage detail in the case study anyway.
+  return h`<ol class="card__flow" aria-label="Architecture stages">
+    ${stages.map(
+      (stage, i) =>
+        h`<li><span class="mono">${String(i + 1).padStart(2, '0')}</span>${stage.label}</li>`,
+    )}
+  </ol>`;
 }
 
 function sourceLink(project) {
@@ -138,6 +141,14 @@ export function openProject(id) {
   $('#detail-title').textContent = project.title;
   $('#detail-body').innerHTML = detailMarkup(project).toString();
 
+  // The demos live in the case study now, so they mount on open and are
+  // built fresh each time — no stale timers from a previous viewing.
+  const host = document.getElementById(`demo-${project.id}`);
+  if (host) {
+    if (project.demo === 'pipeline') mountPipeline(host, project);
+    if (project.demo === 'reasoning') mountReasoning(host, project);
+  }
+
   if (!dialog.open) dialog.showModal();
   $('#detail-body').scrollTop = 0;
   history.replaceState(null, '', `#project-${project.id}`);
@@ -170,7 +181,15 @@ function detailMarkup(project) {
 
     ${block('Problem', d.problem)}
     ${block('Architecture', d.architecture)}
-    ${project.pipeline && !project.featured ? pipelineStrip(project) : ''}
+    ${
+      project.demo
+        ? h`<div class="detail__block detail__block--wide">
+              <h4>Explore it</h4>
+              <div id="demo-${project.id}"></div>
+            </div>`
+        : ''
+    }
+    ${project.pipeline && !project.demo ? pipelineStrip(project) : ''}
     ${list('Security design', d.security)}
     ${list('Engineering decisions', d.decisions)}
     ${block('Challenges', d.challenges)}

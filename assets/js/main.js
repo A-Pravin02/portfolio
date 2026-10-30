@@ -5,7 +5,7 @@
 
 import { $, $$ } from './utils.js';
 import { profile } from './data/profile.js';
-import { renderHero, renderAbout, renderAchievements, renderSkills, renderContact } from './sections.js';
+import { renderHero, renderAbout, renderContact } from './sections.js';
 import { renderProjects, openProject, openFromHash } from './projects-view.js';
 import { initReveals, initChrome } from './interactions.js';
 import { initTerminal } from './terminal.js';
@@ -20,8 +20,6 @@ function boot() {
   renderHero();
   renderAbout();
   renderProjects();
-  renderAchievements();
-  renderSkills();
   renderContact();
 
   /* ── Interaction layer ────────────────────────────────── */

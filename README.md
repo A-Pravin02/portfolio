@@ -28,19 +28,21 @@ All copy and data live in `assets/js/data/`. Nothing else needs touching to add 
 
 | File | What it holds |
 | --- | --- |
-| `profile.js` | Name, hero copy, about paragraphs, interests, education, links, contact copy |
+| `profile.js` | Name, role line, hero headline, the two About sentences, education, links, contact copy |
 | `projects.js` | Every project, plus the pipeline stages, scenarios, nodes and walkthrough cases that drive the two interactive demos |
-| `achievements.js` | Timeline entries |
-| `skills.js` | Skill groups, and which projects evidence each skill |
+| `achievements.js` | The record list |
+| `skills.js` | The four "What I work with" groups |
 
 ### Adding a project
 
 Append an object to the array in `projects.js`.
 
-- Every project gets the same full-width spread, in array order. `featured: true` only marks the two
-  that carry an interactive demo — it does not demote anything else.
-- `demo: 'pipeline' | 'reasoning'` mounts one of the interactive demos in the visual slot. Omit it
-  and the project's `image` fills that slot instead.
+- `featured: true` puts a project on the homepage as a card; the first featured project gets the wide
+  lead card. Anything else is named in the "Also built" line and still opens its full case study.
+- `cardLine` is the one-liner on the card. `question` is the framing question used as a fallback.
+- `demo: 'pipeline' | 'reasoning'` mounts one of the interactive demos inside that project's case
+  study. The homepage deliberately carries no demos — it is meant to be scannable in under a minute,
+  so everything detailed sits one click away.
 - Every key under `details` is optional — a block that has no content is simply not rendered. So a
   project with only `problem` and `limitations` renders cleanly.
 - `links.source` and `links.demo` each render a button only when set. Leave them `null` rather than

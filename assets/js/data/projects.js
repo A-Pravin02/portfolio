@@ -12,6 +12,7 @@ export const projects = [
   {
     id: 'agentbridge',
     question: 'Can an AI agent be trusted with a payment?',
+    cardLine: 'AI agent authorization and payment security infrastructure.',
     title: 'AgentBridge',
     category: 'AI agents · Payment authorization · Backend security',
     year: '2026',
@@ -232,6 +233,7 @@ export const projects = [
   {
     id: 'praxis',
     question: 'What if a language model had to verify its claims?',
+    cardLine: 'Neuro-symbolic architecture for reducing hallucinations in large language models.',
     title: 'PRAXIS',
     category: 'Neuro-symbolic AI · LLM reasoning · Research',
     year: '2026',
@@ -403,6 +405,7 @@ export const projects = [
   {
     id: 'footballgpt',
     question: 'What does attention actually compute?',
+    cardLine: 'A transformer built from scratch, without a high-level ML library.',
     title: 'FootballGPT',
     category: 'Transformer language model from scratch',
     year: '2026',
@@ -433,10 +436,11 @@ export const projects = [
   {
     id: 'face3d',
     question: 'How can a 2D image become a fitted 3D model?',
+    cardLine: 'Single-image 3D face reconstruction with a morphable model.',
     title: 'Deep3DFaceRecon',
     category: 'Computer vision · 3D reconstruction',
     year: '2026',
-    featured: false,
+    featured: true,
     status: 'Complete',
     image: { src: 'assets/img/face-3d.webp', alt: 'Reconstructed 3D face mesh' },
     tagline: 'Textured facial geometry from a single RGB image.',
@@ -471,6 +475,7 @@ export const projects = [
   {
     id: 'agrow',
     question: 'Can a buyer verify where a crop came from?',
+    cardLine: 'Full-stack marketplace with blockchain batch traceability.',
     title: 'Agrow',
     category: 'Full-stack platform · Supply chain',
     year: '2025',
