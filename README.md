@@ -81,6 +81,21 @@ The portrait is deliberately a plain bordered frame: no halo, ring or glow.
 - The résumé lives at `assets/docs/`. Replace the PDF and update `profile.links.resume`.
 - Project images go in `assets/img/` and are referenced from each project's `image` key.
 
+## Palette
+
+All colour lives in `assets/css/tokens.css`. Four colours carry the whole site:
+
+| Token | Value | Role |
+| --- | --- | --- |
+| `--bg` / `--bg-2` / `--surface` | `#070B16` → `#0F1626` | Midnight navy surfaces |
+| `--ink` / `--ink-2` / `--ink-3` | `#E6EFF8` → `#7E91AB` | Ice blue text, three weights |
+| `--accent` | `#3D8BFF` | Electric blue — links, selected states, focus |
+| `--accent-2` | `#CDFF4F` | Chartreuse — rationed to one primary action per view, plus "allowed" in the demos |
+
+Every text pair clears WCAG AA: 16.9:1 for body text on the background, 9.5:1 for secondary,
+6.1:1 for metadata, and 5.9:1 for the electric blue. Changing a token here changes it everywhere,
+including the game board, which reads its colours from the same values.
+
 ## Keyboard
 
 | Key | Action |

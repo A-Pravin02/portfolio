@@ -61,10 +61,10 @@ const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
 /* Scatter corners, one per ghost, in the classic arrangement. */
 const GHOSTS = [
-  { id: 'blinky', colour: '#cf6f6d', scatter: { x: 17, y: 1 }, release: 0, start: { x: 9.5, y: 8.5 }, home: false },
-  { id: 'pinky', colour: '#c793b4', scatter: { x: 1, y: 1 }, release: 0, start: { x: 9.5, y: 10.5 }, home: true },
-  { id: 'inky', colour: '#8fa8c9', scatter: { x: 17, y: 19 }, release: 4, start: { x: 8.5, y: 10.5 }, home: true },
-  { id: 'clyde', colour: '#cf9a5c', scatter: { x: 1, y: 19 }, release: 9, start: { x: 10.5, y: 10.5 }, home: true },
+  { id: 'blinky', colour: '#ff7a8a', scatter: { x: 17, y: 1 }, release: 0, start: { x: 9.5, y: 8.5 }, home: false },
+  { id: 'pinky', colour: '#b78ad6', scatter: { x: 1, y: 1 }, release: 0, start: { x: 9.5, y: 10.5 }, home: true },
+  { id: 'inky', colour: '#6fd4e8', scatter: { x: 17, y: 19 }, release: 4, start: { x: 8.5, y: 10.5 }, home: true },
+  { id: 'clyde', colour: '#ffc96b', scatter: { x: 1, y: 19 }, release: 9, start: { x: 10.5, y: 10.5 }, home: true },
 ];
 
 /* Mode schedule. The last entry runs for the rest of the level. */

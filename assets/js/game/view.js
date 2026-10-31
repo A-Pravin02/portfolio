@@ -9,14 +9,15 @@
 import { $, $$, reducedMotion, goToSection } from '../utils.js';
 import { createGame, STATES } from './engine.js';
 
-/* Muted to sit inside the site's palette rather than shout over it. */
-const WALL = '#201c33';
-const WALL_EDGE = '#6b5cab';
-const PELLET = '#aaa7a0';
-const PAC = '#e0c070';
-const FRIGHT = '#3c3a6e';
-const FRIGHT_FLASH = '#f0eee8';
-const DOOR = '#8a7fb5';
+/* The site palette: midnight navy walls, ice-blue pellets, and the
+   player in chartreuse so the eye always knows where it is. */
+const WALL = '#121c33';
+const WALL_EDGE = '#3d8bff';
+const PELLET = '#a4b6cc';
+const PAC = '#cdff4f';
+const FRIGHT = '#1f3a66';
+const FRIGHT_FLASH = '#e6eff8';
+const DOOR = '#3d8bff';
 
 const DIR_VECTORS = {
   up: { x: 0, y: -1 },
@@ -350,7 +351,7 @@ function paint(ctx, s, cell) {
 
   /* Floating score from the last ghost eaten */
   if (s.eatenAt) {
-    ctx.fillStyle = '#9b87f5';
+    ctx.fillStyle = '#cdff4f';
     ctx.font = `600 ${Math.round(cell * 0.72)}px 'JetBrains Mono', monospace`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -426,7 +427,7 @@ function drawGhost(ctx, s, cell, ghost) {
     ctx.ellipse(ex, ey, r * 0.26, r * 0.32, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#1a1f6b';
+    ctx.fillStyle = '#0a1020';
     ctx.beginPath();
     ctx.arc(ex + look.x * r * 0.12, ey + look.y * r * 0.14, r * 0.14, 0, Math.PI * 2);
     ctx.fill();

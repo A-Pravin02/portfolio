@@ -25,7 +25,7 @@ dialog:modal {
 dialog::backdrop {
   overflow: hidden;
   overscroll-behavior: contain;
-  background: color-mix(in oklab, #04050a 82%, transparent);
+  background: color-mix(in oklab, #03060f 82%, transparent);
   backdrop-filter: blur(6px);
 }
 
@@ -226,8 +226,8 @@ dialog::backdrop {
 }
 
 .pipe__stage[aria-pressed='true'] {
-  border-color: var(--violet);
-  background: color-mix(in oklab, var(--violet) 10%, transparent);
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
   color: var(--ink);
 }
 
@@ -292,7 +292,7 @@ dialog::backdrop {
 }
 
 .pipe__stage[data-state='active'] {
-  border-color: var(--violet);
+  border-color: var(--accent);
 }
 
 /* Right-hand inspector */
@@ -382,9 +382,9 @@ dialog::backdrop {
 }
 
 .chip[aria-pressed='true'] {
-  border-color: var(--violet);
+  border-color: var(--accent);
   color: var(--bg);
-  background: var(--violet);
+  background: var(--accent);
 }
 
 .verdict {
@@ -493,8 +493,8 @@ dialog::backdrop {
 }
 
 .gnode[aria-pressed='true'] rect {
-  stroke: var(--violet);
-  fill: color-mix(in oklab, var(--violet) 14%, transparent);
+  stroke: var(--accent);
+  fill: color-mix(in oklab, var(--accent) 14%, transparent);
 }
 
 .gnode[aria-pressed='true'] text {
@@ -503,8 +503,8 @@ dialog::backdrop {
 
 .gnode[data-kind='symbolic'][aria-pressed='true'] rect,
 .gnode[data-kind='gate'][aria-pressed='true'] rect {
-  stroke: var(--violet);
-  fill: color-mix(in oklab, var(--violet) 12%, transparent);
+  stroke: var(--accent);
+  fill: color-mix(in oklab, var(--accent) 12%, transparent);
 }
 
 .gedge {
@@ -514,11 +514,11 @@ dialog::backdrop {
 }
 
 .gedge.is-live {
-  stroke: var(--violet);
+  stroke: var(--accent);
 }
 
 .gnode.is-live rect {
-  stroke: var(--violet);
+  stroke: var(--accent);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -596,7 +596,7 @@ dialog::backdrop {
   translate: 0 -50%;
   width: 2px;
   height: 1.1em;
-  background: var(--violet);
+  background: var(--accent);
 }
 
 /* Bar inside the hallucination column */
@@ -622,7 +622,7 @@ tr.is-ours .bar > i {
 /* ═══ TERMINAL ═════════════════════════════════════════════ */
 #terminal {
   max-width: min(760px, calc(100vw - 2rem));
-  background: #05060a;
+  background: #040812;
   border-color: color-mix(in oklab, var(--allow) 26%, var(--line-2));
 }
 
@@ -671,7 +671,7 @@ tr.is-ours .bar > i {
   font-family: var(--mono);
   font-size: 0.8125rem;
   line-height: 1.75;
-  color: #b9c0c9;
+  color: #b7c9de;
   scrollbar-width: thin;
 }
 
@@ -694,15 +694,15 @@ tr.is-ours .bar > i {
 }
 
 .term__key {
-  color: var(--violet);
+  color: var(--accent);
 }
 
 .term__hl {
-  color: var(--violet);
+  color: var(--accent);
 }
 
 .term__out a {
-  color: var(--violet);
+  color: var(--accent);
   border-bottom: 1px solid currentColor;
 }
 
@@ -813,7 +813,7 @@ tr.is-ours .bar > i {
 }
 
 .pal__item[data-active='true'] {
-  background: rgba(245, 245, 247, 0.055);
+  background: rgba(230, 239, 248, 0.055);
   color: var(--ink);
 }
 
@@ -846,7 +846,7 @@ tr.is-ours .bar > i {
 /* ═══ GAME ═════════════════════════════════════════════════ */
 #game {
   max-width: min(720px, calc(100vw - 1.5rem));
-  background: #06070b;
+  background: #050a16;
 }
 
 .game {
@@ -890,7 +890,7 @@ tr.is-ours .bar > i {
   max-width: 460px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #05060c;
+  background: #040811;
   touch-action: none;
 }
 
@@ -909,7 +909,7 @@ tr.is-ours .bar > i {
   gap: var(--s-4);
   padding: var(--s-5);
   text-align: center;
-  background: color-mix(in oklab, #05060a 88%, transparent);
+  background: color-mix(in oklab, #040812 88%, transparent);
   backdrop-filter: blur(3px);
   border-radius: var(--radius);
 }
@@ -929,7 +929,7 @@ tr.is-ours .bar > i {
 }
 
 .game__screen .mono {
-  color: var(--violet);
+  color: var(--accent);
 }
 
 .game__screen--won h3 {
@@ -987,7 +987,7 @@ tr.is-ours .bar > i {
 }
 
 .game__pad button:active {
-  background: color-mix(in oklab, var(--violet) 22%, transparent);
+  background: color-mix(in oklab, var(--accent) 22%, transparent);
   color: var(--ink);
 }
 
@@ -1019,7 +1019,7 @@ kbd {
   font-family: var(--mono);
   font-size: 0.6875rem;
   color: var(--ink-2);
-  background: rgba(245, 245, 247, 0.03);
+  background: rgba(230, 239, 248, 0.03);
 }
 
 /* Wide block inside a case study — used by the embedded demos, which
