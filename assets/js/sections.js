@@ -126,9 +126,12 @@ export function renderContact() {
     rows.push({ label: 'Résumé', value: 'Pravin-Anbalagan-Resume.pdf', act: 'Download', href: links.resume });
   }
 
+  // The heading lives in the section head like every other section's,
+  // so all four share one left edge.
+  $('#contact-h').textContent = contact.headline;
+
   $('#contact-body').innerHTML = h`
-    <h2 id="contact-h" class="reveal">${contact.headline}</h2>
-    <p class="lead reveal" style="margin-top: var(--s-3)">${contact.body}</p>
+    <p class="lead reveal">${contact.body}</p>
 
     <div class="contact__links reveal">
       ${rows.map(

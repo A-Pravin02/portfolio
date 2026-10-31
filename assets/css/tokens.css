@@ -46,7 +46,7 @@
   --t-base: clamp(0.9375rem, 0.9rem + 0.18vw, 1.0625rem);
   --t-lead: clamp(1.0625rem, 1rem + 0.34vw, 1.3125rem);
   --t-h3: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
-  --t-h2: clamp(1.875rem, 1.4rem + 2.1vw, 3.25rem);
+  --t-h2: clamp(1.75rem, 1.35rem + 1.5vw, 2.625rem);
   /* Sized so the headline, intro and buttons all sit above the fold
      alongside the portrait, rather than pushing them off it. */
   --t-h1: clamp(2.125rem, 1.35rem + 2.6vw, 3.5rem);
@@ -342,20 +342,15 @@ p {
   border-top: 1px solid var(--line);
 }
 
+/* Heading and body share one left edge. An earlier version put the
+   section label in its own 10rem column, which indented every heading
+   192px past the content it introduced and anchored it to nothing. */
 .section__head {
-  display: grid;
-  gap: var(--s-3);
-  margin-bottom: var(--s-7);
+  margin-bottom: var(--s-6);
 }
 
-/* The index sits in its own column so every heading on the page
-   starts at the same measure. */
-@media (min-width: 860px) {
-  .section__head {
-    grid-template-columns: 10rem minmax(0, 1fr);
-    gap: var(--s-6);
-    align-items: baseline;
-  }
+.section__head h2 {
+  max-width: 22ch;
 }
 
 .section__head h2 {
