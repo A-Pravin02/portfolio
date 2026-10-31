@@ -11,6 +11,8 @@ import { initReveals, initChrome } from './interactions.js';
 import { initTerminal } from './terminal.js';
 import { initPalette } from './palette.js';
 import { initGame, mountPreview } from './game/view.js';
+import { mountHeroField } from './hero-field.js';
+import { mountTicker } from './ticker.js';
 
 // Marks that scripting is available, so the reveal styles can apply.
 document.documentElement.classList.add('js');
@@ -18,6 +20,8 @@ document.documentElement.classList.add('js');
 function boot() {
   /* ── Content ──────────────────────────────────────────── */
   renderHero();
+  mountHeroField($('#hero-field'));
+  mountTicker($('#ticker-track'));
   renderAbout();
   renderProjects();
   renderContact();

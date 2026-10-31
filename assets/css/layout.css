@@ -219,7 +219,13 @@
    sized by its content rather than forced to fill the viewport. */
 .hero {
   position: relative;
+  display: grid;
+  align-content: center;
+  /* Fills the viewport so the field reads as a whole screen, less the
+     ticker and the nav. Grows past it when the content needs more. */
+  min-height: calc(100svh - 28px);
   padding: calc(var(--s-8) + 2.5rem) var(--gutter) var(--s-8);
+  overflow: clip;
 }
 
 .hero__grid {
@@ -296,10 +302,16 @@
      Heavier filtering would wreck the skin tones. */
   filter: saturate(0.96) contrast(1.02);
 
-  /* Mobile: fade the bottom into the page, leave the sides alone so the
-     subject is never clipped at narrow widths. */
-  -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 98%);
-  mask-image: linear-gradient(to bottom, #000 58%, transparent 98%);
+  /* Mobile: fade the bottom hard and the sides only slightly — enough
+     that the frame does not cut a straight line through the network
+     behind it, not enough to clip the subject at narrow widths. */
+  --fade-y: linear-gradient(to bottom, #000 56%, transparent 98%);
+  --fade-x: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%);
+
+  -webkit-mask-image: var(--fade-y), var(--fade-x);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--fade-y), var(--fade-x);
+  mask-composite: intersect;
 }
 
 @media (min-width: 980px) {
@@ -314,16 +326,10 @@
   }
 }
 
-/* A scrim in the page colour, so the bottom of the frame resolves into
-   the background rather than stopping at an edge. */
-.hero__portrait::after {
-  content: '';
-  position: absolute;
-  inset: auto 0 -1px 0;
-  height: 42%;
-  pointer-events: none;
-  background: linear-gradient(to top, var(--bg) 4%, transparent 92%);
-}
+/* No scrim. With the live field behind the hero, painting the page
+   colour over the portrait's bottom edge drew an opaque rectangle
+   across the network. The mask alone is transparent, so the photo
+   dissolves into the field instead of sitting on a plate. */
 
 /* ── Copy ──────────────────────────────────────────────────── */
 .hero h1 {
@@ -1242,4 +1248,87 @@ a.skill:hover .skill__ev {
 
 .record__org {
   color: var(--ink-3);
+}
+
+/* ═══ TICKER ═══════════════════════════════════════════════
+   A status strip above the nav. Every item is a real figure from
+   the projects below, not filler. */
+.ticker {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #050811;
+  border-bottom: 1px solid var(--line);
+  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+}
+
+.ticker__track {
+  display: flex;
+  flex: 0 0 auto;
+  gap: var(--s-6);
+  padding-left: var(--s-6);
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ticker__track {
+    animation: ticker 64s linear infinite;
+  }
+
+  .ticker:hover .ticker__track {
+    animation-play-state: paused;
+  }
+}
+
+/* Two identical runs sit side by side, so -50% lands seamlessly. */
+@keyframes ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker__track i {
+  font-style: normal;
+  color: var(--accent);
+}
+
+/* The bar and nav stack, so push everything below both. */
+.topbar {
+  top: 28px;
+}
+
+/* ═══ HERO FIELD ═══════════════════════════════════════════ */
+.hero__field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  /* Densest behind the portrait, thinning out under the text so the
+     headline never has to fight it. */
+  mask-image: radial-gradient(120% 95% at 78% 45%, #000 18%, rgba(0, 0, 0, 0.45) 55%, transparent 88%);
+  -webkit-mask-image: radial-gradient(120% 95% at 78% 45%, #000 18%, rgba(0, 0, 0, 0.45) 55%, transparent 88%);
+}
+
+.hero__grid {
+  position: relative;
+  z-index: 1;
+}
+
+/* The portrait sits in the field rather than on top of it: its own
+   faded edges let the network show through. */
+.hero__portrait {
+  z-index: 1;
 }
